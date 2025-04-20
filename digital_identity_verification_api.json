@@ -1,0 +1,1947 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Digital Identity Verification API",
+    "description": "This API provides comprehensive identity verification services using telecom network data to validate digital identities and prevent AI-driven impersonation.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "verification",
+      "description": "Identity verification operations"
+    },
+    {
+      "name": "documents",
+      "description": "Document verification operations"
+    },
+    {
+      "name": "biometrics",
+      "description": "Biometric verification operations"
+    },
+    {
+      "name": "sessions",
+      "description": "Verification session operations"
+    }
+  ],
+  "paths": {
+    "/identity/verify/session/create": {
+      "post": {
+        "tags": ["sessions"],
+        "summary": "Create verification session",
+        "description": "Creates a new identity verification session.",
+        "operationId": "createVerificationSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/session/{sessionId}": {
+      "get": {
+        "tags": ["sessions"],
+        "summary": "Get verification session",
+        "description": "Retrieves the status and details of a verification session.",
+        "operationId": "getVerificationSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "description": "ID of the verification session",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/phone": {
+      "post": {
+        "tags": ["verification"],
+        "summary": "Verify phone number",
+        "description": "Verifies a phone number using telecom network data.",
+        "operationId": "verifyPhoneNumber",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phone verification completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/document": {
+      "post": {
+        "tags": ["documents"],
+        "summary": "Verify identity document",
+        "description": "Verifies an identity document and cross-references with telecom network data.",
+        "operationId": "verifyDocument",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document verification completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type - Invalid document format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/biometric/face": {
+      "post": {
+        "tags": ["biometrics"],
+        "summary": "Verify facial biometrics",
+        "description": "Verifies facial biometrics and cross-references with telecom network data.",
+        "operationId": "verifyFacialBiometrics",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FacialBiometricVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Facial biometric verification completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BiometricVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type - Invalid image format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/biometric/voice": {
+      "post": {
+        "tags": ["biometrics"],
+        "summary": "Verify voice biometrics",
+        "description": "Verifies voice biometrics and cross-references with telecom network data.",
+        "operationId": "verifyVoiceBiometrics",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceBiometricVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Voice biometric verification completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BiometricVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type - Invalid audio format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/composite": {
+      "post": {
+        "tags": ["verification"],
+        "summary": "Perform composite verification",
+        "description": "Performs a composite verification using multiple verification methods.",
+        "operationId": "performCompositeVerification",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompositeVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Composite verification completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompositeVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/ai-detection": {
+      "post": {
+        "tags": ["verification"],
+        "summary": "Detect AI impersonation",
+        "description": "Analyzes verification data to detect potential AI impersonation.",
+        "operationId": "detectAiImpersonation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiDetectionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI detection completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiDetectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SessionCreationRequest": {
+        "type": "object",
+        "required": ["verificationTypes", "callbackUrl"],
+        "properties": {
+          "verificationTypes": {
+            "type": "array",
+            "description": "Types of verification to include in the session",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "document", "face", "voice", "composite", "ai_detection"]
+            },
+            "example": ["phone", "document", "face"]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "description": "Time in seconds until the session expires",
+            "minimum": 300,
+            "maximum": 86400,
+            "default": 3600,
+            "example": 3600
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification results",
+            "example": "https://example.com/callbacks/verification"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata for the session",
+            "example": {
+              "userId": "user123",
+              "requestId": "req-456"
+            }
+          },
+          "redirectUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to redirect the user after verification",
+            "example": "https://example.com/verification/complete"
+          }
+        }
+      },
+      "SessionResponse": {
+        "type": "object",
+        "required": ["sessionId", "status", "createdAt", "verificationTypes"],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["created", "in_progress", "completed", "expired", "failed"],
+            "description": "Current status of the verification session",
+            "example": "created"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the session was created",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the session expires",
+            "example": "2025-04-20T17:30:00Z"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the session was completed",
+            "example": null
+          },
+          "verificationTypes": {
+            "type": "array",
+            "description": "Types of verification included in the session",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "document", "face", "voice", "composite", "ai_detection"]
+            },
+            "example": ["phone", "document", "face"]
+          },
+          "verificationUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL for the user to complete the verification",
+            "example": "https://verify.telecom-network.example.com/session/123e4567-e89b-12d3-a456-426614174000"
+          },
+          "verificationResults": {
+            "type": "object",
+            "description": "Results of completed verifications",
+            "properties": {
+              "phone": {
+                "type": "object",
+                "description": "Phone verification result",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "completed", "failed"],
+                    "description": "Status of the phone verification",
+                    "example": "pending"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the phone was verified",
+                    "example": null
+                  }
+                }
+              },
+              "document": {
+                "type": "object",
+                "description": "Document verification result",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "completed", "failed"],
+                    "description": "Status of the document verification",
+                    "example": "pending"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the document was verified",
+                    "example": null
+                  }
+                }
+              },
+              "face": {
+                "type": "object",
+                "description": "Facial biometric verification result",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "completed", "failed"],
+                    "description": "Status of the facial verification",
+                    "example": "pending"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the face was verified",
+                    "example": null
+                  }
+                }
+              }
+            }
+          },
+          "overallResult": {
+            "type": "object",
+            "description": "Overall verification result",
+            "properties": {
+              "verified": {
+                "type": "boolean",
+                "description": "Whether the identity was verified",
+                "example": null
+              },
+              "confidenceScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Overall confidence score (0-1)",
+                "example": null
+              },
+              "aiImpersonationRisk": {
+                "type": "string",
+                "enum": ["none", "low", "medium", "high", "critical"],
+                "description": "Level of AI impersonation risk",
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "PhoneVerificationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for phone verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "verificationMethod": {
+            "type": "string",
+            "enum": ["sms", "call", "silent", "network"],
+            "description": "Method to use for phone verification",
+            "default": "network",
+            "example": "network"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification results",
+            "example": "https://example.com/callbacks/phone-verification"
+          }
+        }
+      },
+      "PhoneVerificationResponse": {
+        "type": "object",
+        "required": ["verificationId", "status", "phoneNumber"],
+        "properties": {
+          "verificationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the verification",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Status of the verification",
+            "example": "completed"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the phone was verified",
+            "example": true
+          },
+          "verificationMethod": {
+            "type": "string",
+            "enum": ["sms", "call", "silent", "network"],
+            "description": "Method used for verification",
+            "example": "network"
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the verification was completed",
+            "example": "2025-04-20T16:35:00Z"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for the verification (0-1)",
+            "example": 0.95
+          },
+          "carrierInfo": {
+            "type": "object",
+            "description": "Information about the phone carrier",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the carrier",
+                "example": "Example Telecom"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["mobile", "landline", "voip", "other"],
+                "description": "Type of phone line",
+                "example": "mobile"
+              },
+              "country": {
+                "type": "string",
+                "description": "Country code of the phone number",
+                "example": "US"
+              }
+            }
+          },
+          "riskAssessment": {
+            "type": "object",
+            "description": "Risk assessment for the phone number",
+            "properties": {
+              "riskLevel": {
+                "type": "string",
+                "enum": ["low", "medium", "high"],
+                "description": "Overall risk level",
+                "example": "low"
+              },
+              "flags": {
+                "type": "array",
+                "description": "Risk flags for the phone number",
+                "items": {
+                  "type": "string"
+                },
+                "example": []
+              }
+            }
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "DocumentVerificationRequest": {
+        "type": "object",
+        "required": ["documentType", "documentFront", "phoneNumber", "consentToken"],
+        "properties": {
+          "documentType": {
+            "type": "string",
+            "enum": ["passport", "id_card", "drivers_license", "residence_permit"],
+            "description": "Type of identity document",
+            "example": "drivers_license"
+          },
+          "documentFront": {
+            "type": "string",
+            "format": "binary",
+            "description": "Front image of the document"
+          },
+          "documentBack": {
+            "type": "string",
+            "format": "binary",
+            "description": "Back image of the document (if applicable)"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for document verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification results",
+            "example": "https://example.com/callbacks/document-verification"
+          }
+        }
+      },
+      "DocumentVerificationResponse": {
+        "type": "object",
+        "required": ["verificationId", "status", "documentType"],
+        "properties": {
+          "verificationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the verification",
+            "example": "123e4567-e89b-12d3-a456-426614174002"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Status of the verification",
+            "example": "completed"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": ["passport", "id_card", "drivers_license", "residence_permit"],
+            "description": "Type of identity document",
+            "example": "drivers_license"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the document was verified",
+            "example": true
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the verification was completed",
+            "example": "2025-04-20T16:40:00Z"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for the verification (0-1)",
+            "example": 0.92
+          },
+          "extractedData": {
+            "type": "object",
+            "description": "Data extracted from the document",
+            "properties": {
+              "fullName": {
+                "type": "string",
+                "description": "Full name from the document",
+                "example": "John A. Smith"
+              },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "description": "Date of birth from the document",
+                "example": "1985-05-15"
+              },
+              "documentNumber": {
+                "type": "string",
+                "description": "Document number (partially masked)",
+                "example": "DL12****78"
+              },
+              "expiryDate": {
+                "type": "string",
+                "format": "date",
+                "description": "Document expiry date",
+                "example": "2028-05-14"
+              },
+              "issuingCountry": {
+                "type": "string",
+                "description": "Country that issued the document",
+                "example": "US"
+              },
+              "address": {
+                "type": "string",
+                "description": "Address from the document (partially masked)",
+                "example": "123 Main St, Any****"
+              }
+            }
+          },
+          "verificationChecks": {
+            "type": "object",
+            "description": "Results of verification checks",
+            "properties": {
+              "documentAuthenticity": {
+                "type": "boolean",
+                "description": "Whether the document appears authentic",
+                "example": true
+              },
+              "documentExpired": {
+                "type": "boolean",
+                "description": "Whether the document is expired",
+                "example": false
+              },
+              "dataConsistency": {
+                "type": "boolean",
+                "description": "Whether data is consistent across the document",
+                "example": true
+              },
+              "telecomMatch": {
+                "type": "boolean",
+                "description": "Whether document data matches telecom network data",
+                "example": true
+              }
+            }
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "FacialBiometricVerificationRequest": {
+        "type": "object",
+        "required": ["selfieImage", "phoneNumber", "consentToken"],
+        "properties": {
+          "selfieImage": {
+            "type": "string",
+            "format": "binary",
+            "description": "Selfie image of the user"
+          },
+          "referenceImage": {
+            "type": "string",
+            "format": "binary",
+            "description": "Reference image to compare against (if not using document)"
+          },
+          "documentVerificationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of a previous document verification to use as reference",
+            "example": "123e4567-e89b-12d3-a456-426614174002"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for biometric verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "livenessCheck": {
+            "type": "boolean",
+            "description": "Whether to perform liveness check",
+            "default": true,
+            "example": true
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification results",
+            "example": "https://example.com/callbacks/facial-verification"
+          }
+        }
+      },
+      "VoiceBiometricVerificationRequest": {
+        "type": "object",
+        "required": ["voiceSample", "phoneNumber", "consentToken"],
+        "properties": {
+          "voiceSample": {
+            "type": "string",
+            "format": "binary",
+            "description": "Voice sample of the user"
+          },
+          "referenceVoiceSample": {
+            "type": "string",
+            "format": "binary",
+            "description": "Reference voice sample to compare against"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for biometric verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "livenessCheck": {
+            "type": "boolean",
+            "description": "Whether to perform liveness check",
+            "default": true,
+            "example": true
+          },
+          "phraseId": {
+            "type": "string",
+            "description": "ID of the phrase to be spoken",
+            "example": "phrase-123"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification results",
+            "example": "https://example.com/callbacks/voice-verification"
+          }
+        }
+      },
+      "BiometricVerificationResponse": {
+        "type": "object",
+        "required": ["verificationId", "status", "biometricType"],
+        "properties": {
+          "verificationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the verification",
+            "example": "123e4567-e89b-12d3-a456-426614174003"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Status of the verification",
+            "example": "completed"
+          },
+          "biometricType": {
+            "type": "string",
+            "enum": ["face", "voice"],
+            "description": "Type of biometric verification",
+            "example": "face"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the biometric was verified",
+            "example": true
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the verification was completed",
+            "example": "2025-04-20T16:45:00Z"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for the verification (0-1)",
+            "example": 0.89
+          },
+          "livenessResult": {
+            "type": "object",
+            "description": "Results of liveness check",
+            "properties": {
+              "liveness": {
+                "type": "boolean",
+                "description": "Whether the sample passed liveness check",
+                "example": true
+              },
+              "livenessScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Liveness confidence score (0-1)",
+                "example": 0.95
+              }
+            }
+          },
+          "aiDetectionResult": {
+            "type": "object",
+            "description": "Results of AI detection",
+            "properties": {
+              "aiGenerated": {
+                "type": "boolean",
+                "description": "Whether the sample appears to be AI-generated",
+                "example": false
+              },
+              "aiGenerationScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "AI generation confidence score (0-1)",
+                "example": 0.05
+              }
+            }
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "CompositeVerificationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "verificationTypes"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "verificationTypes": {
+            "type": "array",
+            "description": "Types of verification to perform",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "document", "face", "voice", "ai_detection"]
+            },
+            "example": ["phone", "document", "face"]
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "verificationIds": {
+            "type": "object",
+            "description": "IDs of existing verifications to include",
+            "properties": {
+              "phone": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing phone verification",
+                "example": "123e4567-e89b-12d3-a456-426614174001"
+              },
+              "document": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing document verification",
+                "example": "123e4567-e89b-12d3-a456-426614174002"
+              },
+              "face": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing facial verification",
+                "example": "123e4567-e89b-12d3-a456-426614174003"
+              },
+              "voice": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing voice verification",
+                "example": "123e4567-e89b-12d3-a456-426614174004"
+              }
+            }
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification results",
+            "example": "https://example.com/callbacks/composite-verification"
+          }
+        }
+      },
+      "CompositeVerificationResponse": {
+        "type": "object",
+        "required": ["verificationId", "status", "phoneNumber", "verificationTypes"],
+        "properties": {
+          "verificationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the composite verification",
+            "example": "123e4567-e89b-12d3-a456-426614174005"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Status of the verification",
+            "example": "completed"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "verificationTypes": {
+            "type": "array",
+            "description": "Types of verification performed",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "document", "face", "voice", "ai_detection"]
+            },
+            "example": ["phone", "document", "face"]
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the identity was verified",
+            "example": true
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the verification was completed",
+            "example": "2025-04-20T16:50:00Z"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall confidence score (0-1)",
+            "example": 0.92
+          },
+          "verificationResults": {
+            "type": "object",
+            "description": "Results of individual verifications",
+            "properties": {
+              "phone": {
+                "type": "object",
+                "description": "Phone verification result",
+                "properties": {
+                  "verificationId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the phone verification",
+                    "example": "123e4567-e89b-12d3-a456-426614174001"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the phone was verified",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.95
+                  }
+                }
+              },
+              "document": {
+                "type": "object",
+                "description": "Document verification result",
+                "properties": {
+                  "verificationId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the document verification",
+                    "example": "123e4567-e89b-12d3-a456-426614174002"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the document was verified",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.92
+                  }
+                }
+              },
+              "face": {
+                "type": "object",
+                "description": "Facial verification result",
+                "properties": {
+                  "verificationId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the facial verification",
+                    "example": "123e4567-e89b-12d3-a456-426614174003"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the face was verified",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.89
+                  }
+                }
+              }
+            }
+          },
+          "dataConsistency": {
+            "type": "object",
+            "description": "Assessment of data consistency across verifications",
+            "properties": {
+              "consistent": {
+                "type": "boolean",
+                "description": "Whether data is consistent across verifications",
+                "example": true
+              },
+              "consistencyScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Data consistency score (0-1)",
+                "example": 0.94
+              },
+              "inconsistencies": {
+                "type": "array",
+                "description": "List of detected inconsistencies",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string",
+                      "description": "Field with inconsistency",
+                      "example": "name"
+                    },
+                    "sources": {
+                      "type": "array",
+                      "description": "Sources with different values",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": ["document", "telecom_data"]
+                    }
+                  }
+                },
+                "example": []
+              }
+            }
+          },
+          "aiImpersonationRisk": {
+            "type": "object",
+            "description": "Assessment of AI impersonation risk",
+            "properties": {
+              "riskLevel": {
+                "type": "string",
+                "enum": ["none", "low", "medium", "high", "critical"],
+                "description": "Level of AI impersonation risk",
+                "example": "low"
+              },
+              "riskScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "AI impersonation risk score (0-1)",
+                "example": 0.15
+              },
+              "indicators": {
+                "type": "array",
+                "description": "Indicators of potential AI impersonation",
+                "items": {
+                  "type": "string"
+                },
+                "example": []
+              }
+            }
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "AiDetectionRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for AI detection",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "verificationIds": {
+            "type": "object",
+            "description": "IDs of existing verifications to analyze",
+            "properties": {
+              "document": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing document verification",
+                "example": "123e4567-e89b-12d3-a456-426614174002"
+              },
+              "face": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing facial verification",
+                "example": "123e4567-e89b-12d3-a456-426614174003"
+              },
+              "voice": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of existing voice verification",
+                "example": "123e4567-e89b-12d3-a456-426614174004"
+              }
+            }
+          },
+          "detectionTypes": {
+            "type": "array",
+            "description": "Types of AI detection to perform",
+            "items": {
+              "type": "string",
+              "enum": ["deepfake", "synthetic_voice", "synthetic_document", "behavior", "all"]
+            },
+            "default": ["all"],
+            "example": ["deepfake", "synthetic_voice", "behavior"]
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive detection results",
+            "example": "https://example.com/callbacks/ai-detection"
+          }
+        }
+      },
+      "AiDetectionResponse": {
+        "type": "object",
+        "required": ["detectionId", "status", "phoneNumber"],
+        "properties": {
+          "detectionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the AI detection",
+            "example": "123e4567-e89b-12d3-a456-426614174006"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Status of the detection",
+            "example": "completed"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "detectedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the detection was completed",
+            "example": "2025-04-20T16:55:00Z"
+          },
+          "aiImpersonationDetected": {
+            "type": "boolean",
+            "description": "Whether AI impersonation was detected",
+            "example": false
+          },
+          "overallRiskLevel": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high", "critical"],
+            "description": "Overall AI impersonation risk level",
+            "example": "low"
+          },
+          "overallRiskScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall AI impersonation risk score (0-1)",
+            "example": 0.15
+          },
+          "detectionResults": {
+            "type": "object",
+            "description": "Results of individual detection types",
+            "properties": {
+              "deepfake": {
+                "type": "object",
+                "description": "Deepfake detection result",
+                "properties": {
+                  "detected": {
+                    "type": "boolean",
+                    "description": "Whether deepfake was detected",
+                    "example": false
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.05
+                  },
+                  "indicators": {
+                    "type": "array",
+                    "description": "Indicators of deepfake",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  }
+                }
+              },
+              "synthetic_voice": {
+                "type": "object",
+                "description": "Synthetic voice detection result",
+                "properties": {
+                  "detected": {
+                    "type": "boolean",
+                    "description": "Whether synthetic voice was detected",
+                    "example": false
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.03
+                  },
+                  "indicators": {
+                    "type": "array",
+                    "description": "Indicators of synthetic voice",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  }
+                }
+              },
+              "behavior": {
+                "type": "object",
+                "description": "Behavioral analysis result",
+                "properties": {
+                  "anomalyDetected": {
+                    "type": "boolean",
+                    "description": "Whether behavioral anomaly was detected",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.35
+                  },
+                  "indicators": {
+                    "type": "array",
+                    "description": "Indicators of behavioral anomaly",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["unusual_location_pattern"]
+                  }
+                }
+              }
+            }
+          },
+          "telecomNetworkAnalysis": {
+            "type": "object",
+            "description": "Analysis of telecom network data",
+            "properties": {
+              "networkConsistency": {
+                "type": "boolean",
+                "description": "Whether network data is consistent with user identity",
+                "example": true
+              },
+              "consistencyScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Network consistency score (0-1)",
+                "example": 0.95
+              },
+              "anomalies": {
+                "type": "array",
+                "description": "Network anomalies detected",
+                "items": {
+                  "type": "string"
+                },
+                "example": []
+              }
+            }
+          },
+          "recommendedActions": {
+            "type": "array",
+            "description": "Recommended actions based on detection results",
+            "items": {
+              "type": "string"
+            },
+            "example": ["No additional verification needed"]
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the verification session",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

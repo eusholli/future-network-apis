@@ -1,0 +1,734 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Real-time Location Attestation API",
+    "description": "This API provides cryptographically signed attestations of a user's physical location based on telecom network data, creating a verifiable record of presence that AI cannot easily fake.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "location",
+      "description": "Location attestation operations"
+    },
+    {
+      "name": "verification",
+      "description": "Verification and validation operations"
+    }
+  ],
+  "paths": {
+    "/location/attest": {
+      "post": {
+        "tags": ["location"],
+        "summary": "Request a location attestation",
+        "description": "Initiates a location attestation process for a user. This endpoint requires user consent and returns an attestation request ID.",
+        "operationId": "requestLocationAttestation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttestationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Attestation request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttestationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/location/attest/{requestId}": {
+      "get": {
+        "tags": ["location"],
+        "summary": "Get the status and result of a location attestation request",
+        "description": "Retrieves the current status and results of a location attestation request.",
+        "operationId": "getAttestationStatus",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "ID of the attestation request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attestation status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttestationStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attestation request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/location/verify": {
+      "post": {
+        "tags": ["verification"],
+        "summary": "Verify a location attestation",
+        "description": "Verifies the authenticity and integrity of a location attestation.",
+        "operationId": "verifyAttestation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attestation verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/location/history": {
+      "get": {
+        "tags": ["location"],
+        "summary": "Get location attestation history",
+        "description": "Retrieves the history of location attestations for a user within a specified time period.",
+        "operationId": "getAttestationHistory",
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "description": "Phone number of the user in E.164 format",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "Start time for the history query (ISO 8601 format)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "End time for the history query (ISO 8601 format)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "consentToken",
+            "in": "query",
+            "description": "Token representing user consent for accessing location history",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attestation history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttestationHistory"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AttestationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "callbackUrl"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for location attestation",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive attestation result callback",
+            "example": "https://example.com/callbacks/location"
+          },
+          "accuracyLevel": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Level of location accuracy required",
+            "default": "medium"
+          },
+          "includeMetadata": {
+            "type": "boolean",
+            "description": "Whether to include additional metadata in the attestation",
+            "default": false
+          }
+        }
+      },
+      "AttestationResponse": {
+        "type": "object",
+        "required": ["requestId", "status"],
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the attestation request",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "processing", "completed", "failed"],
+            "description": "Current status of the attestation request",
+            "example": "pending"
+          },
+          "estimatedCompletionTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Estimated time when attestation will complete",
+            "example": "2025-04-20T16:30:00Z"
+          }
+        }
+      },
+      "AttestationStatus": {
+        "type": "object",
+        "required": ["requestId", "status"],
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the attestation request",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "processing", "completed", "failed"],
+            "description": "Current status of the attestation request",
+            "example": "completed"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when attestation was completed",
+            "example": "2025-04-20T16:25:43Z"
+          },
+          "attestation": {
+            "type": "object",
+            "description": "Attestation result details",
+            "properties": {
+              "locationData": {
+                "type": "object",
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Latitude coordinate",
+                    "example": 37.7749
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Longitude coordinate",
+                    "example": -122.4194
+                  },
+                  "accuracy": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Accuracy radius in meters",
+                    "example": 10.5
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when location was determined",
+                    "example": "2025-04-20T16:25:00Z"
+                  }
+                }
+              },
+              "signature": {
+                "type": "string",
+                "description": "Cryptographic signature of the location data",
+                "example": "MEUCIQDKZokqnCjrRtw0tni+PT8USnI047rX8ZPi9ZQ3/CYA0QIgaEBLPyXXuFnJKNmvDZ1TJ2V4yRE/AIGJkQaA9v4Xsxs="
+              },
+              "certificate": {
+                "type": "string",
+                "description": "Certificate used for signing the attestation",
+                "example": "-----BEGIN CERTIFICATE-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0zJq..."
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Additional metadata about the location attestation",
+                "properties": {
+                  "cellTowers": {
+                    "type": "array",
+                    "description": "Cell towers used for location determination",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Cell tower identifier",
+                          "example": "12345"
+                        },
+                        "signalStrength": {
+                          "type": "number",
+                          "description": "Signal strength in dBm",
+                          "example": -85
+                        }
+                      }
+                    }
+                  },
+                  "networkType": {
+                    "type": "string",
+                    "description": "Type of network used for location determination",
+                    "example": "LTE"
+                  }
+                }
+              }
+            }
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "Reason for attestation failure if status is 'failed'",
+            "example": "Unable to determine location with required accuracy"
+          }
+        }
+      },
+      "VerificationRequest": {
+        "type": "object",
+        "required": ["attestation"],
+        "properties": {
+          "attestation": {
+            "type": "object",
+            "description": "Attestation to verify",
+            "required": ["locationData", "signature", "certificate"],
+            "properties": {
+              "locationData": {
+                "type": "object",
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Latitude coordinate",
+                    "example": 37.7749
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Longitude coordinate",
+                    "example": -122.4194
+                  },
+                  "accuracy": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Accuracy radius in meters",
+                    "example": 10.5
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when location was determined",
+                    "example": "2025-04-20T16:25:00Z"
+                  }
+                }
+              },
+              "signature": {
+                "type": "string",
+                "description": "Cryptographic signature of the location data",
+                "example": "MEUCIQDKZokqnCjrRtw0tni+PT8USnI047rX8ZPi9ZQ3/CYA0QIgaEBLPyXXuFnJKNmvDZ1TJ2V4yRE/AIGJkQaA9v4Xsxs="
+              },
+              "certificate": {
+                "type": "string",
+                "description": "Certificate used for signing the attestation",
+                "example": "-----BEGIN CERTIFICATE-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0zJq..."
+              }
+            }
+          }
+        }
+      },
+      "VerificationResponse": {
+        "type": "object",
+        "required": ["verified"],
+        "properties": {
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the attestation was verified successfully",
+            "example": true
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional details about the verification",
+            "properties": {
+              "issuer": {
+                "type": "string",
+                "description": "Issuer of the attestation certificate",
+                "example": "Telecom Network Authority"
+              },
+              "issuedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Time when the attestation was issued",
+                "example": "2025-04-20T16:25:00Z"
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Time when the attestation expires",
+                "example": "2025-04-27T16:25:00Z"
+              }
+            }
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "Reason for verification failure if not verified",
+            "example": "Invalid signature"
+          }
+        }
+      },
+      "AttestationHistory": {
+        "type": "object",
+        "required": ["phoneNumber", "attestations"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start time of the history period",
+            "example": "2025-04-13T00:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End time of the history period",
+            "example": "2025-04-20T23:59:59Z"
+          },
+          "attestations": {
+            "type": "array",
+            "description": "List of attestations in the history period",
+            "items": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the attestation request",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when attestation was created",
+                  "example": "2025-04-15T14:30:00Z"
+                },
+                "locationData": {
+                  "type": "object",
+                  "properties": {
+                    "latitude": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Latitude coordinate",
+                      "example": 37.7749
+                    },
+                    "longitude": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Longitude coordinate",
+                      "example": -122.4194
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

@@ -1,0 +1,1204 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Communication Pattern Authentication API",
+    "description": "This API analyzes a user's communication patterns to create a behavioral signature that can be used for authentication, making it difficult for AI to impersonate a user's communication behavior.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "patterns",
+      "description": "Communication pattern operations"
+    },
+    {
+      "name": "authentication",
+      "description": "Authentication operations"
+    },
+    {
+      "name": "profiles",
+      "description": "User profile operations"
+    }
+  ],
+  "paths": {
+    "/patterns/profile/create": {
+      "post": {
+        "tags": ["patterns", "profiles"],
+        "summary": "Create a communication pattern profile",
+        "description": "Creates a new communication pattern profile for a user based on their historical communication data.",
+        "operationId": "createPatternProfile",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/patterns/profile/{profileId}": {
+      "get": {
+        "tags": ["patterns", "profiles"],
+        "summary": "Get a communication pattern profile",
+        "description": "Retrieves a user's communication pattern profile.",
+        "operationId": "getPatternProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "ID of the pattern profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["patterns", "profiles"],
+        "summary": "Update a communication pattern profile",
+        "description": "Updates an existing communication pattern profile with new data.",
+        "operationId": "updatePatternProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "ID of the pattern profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["patterns", "profiles"],
+        "summary": "Delete a communication pattern profile",
+        "description": "Deletes a user's communication pattern profile.",
+        "operationId": "deletePatternProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "ID of the pattern profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Profile deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/patterns/authenticate": {
+      "post": {
+        "tags": ["patterns", "authentication"],
+        "summary": "Authenticate using communication patterns",
+        "description": "Authenticates a user based on their current communication patterns against their stored profile.",
+        "operationId": "authenticateWithPatterns",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/patterns/analyze": {
+      "post": {
+        "tags": ["patterns"],
+        "summary": "Analyze communication patterns",
+        "description": "Analyzes a user's communication patterns without creating a profile or performing authentication.",
+        "operationId": "analyzePatterns",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalysisRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProfileCreationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "dataCollectionPeriod"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for profile creation",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "dataCollectionPeriod": {
+            "type": "integer",
+            "description": "Period in days for which to collect data (1-90)",
+            "minimum": 1,
+            "maximum": 90,
+            "example": 30
+          },
+          "patternTypes": {
+            "type": "array",
+            "description": "Types of communication patterns to include in the profile",
+            "items": {
+              "type": "string",
+              "enum": ["calls", "messages", "data", "all"]
+            },
+            "default": ["all"],
+            "example": ["calls", "messages"]
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive profile creation result callback",
+            "example": "https://example.com/callbacks/profile"
+          }
+        }
+      },
+      "ProfileUpdateRequest": {
+        "type": "object",
+        "required": ["consentToken"],
+        "properties": {
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for profile update",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "dataCollectionPeriod": {
+            "type": "integer",
+            "description": "Period in days for which to collect data (1-90)",
+            "minimum": 1,
+            "maximum": 90,
+            "example": 30
+          },
+          "patternTypes": {
+            "type": "array",
+            "description": "Types of communication patterns to include in the profile",
+            "items": {
+              "type": "string",
+              "enum": ["calls", "messages", "data", "all"]
+            },
+            "example": ["calls", "messages", "data"]
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive profile update result callback",
+            "example": "https://example.com/callbacks/profile-update"
+          }
+        }
+      },
+      "ProfileResponse": {
+        "type": "object",
+        "required": ["profileId", "status", "createdAt"],
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the pattern profile",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["creating", "active", "updating", "inactive"],
+            "description": "Current status of the profile",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the profile was created",
+            "example": "2025-03-20T14:30:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the profile was last updated",
+            "example": "2025-04-20T15:45:00Z"
+          },
+          "patternTypes": {
+            "type": "array",
+            "description": "Types of communication patterns included in the profile",
+            "items": {
+              "type": "string",
+              "enum": ["calls", "messages", "data"]
+            },
+            "example": ["calls", "messages"]
+          },
+          "dataCollectionPeriod": {
+            "type": "integer",
+            "description": "Period in days for which data was collected",
+            "example": 30
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score of the profile (0-1)",
+            "example": 0.95
+          },
+          "patternSummary": {
+            "type": "object",
+            "description": "Summary of the communication patterns in the profile",
+            "properties": {
+              "callPatterns": {
+                "type": "object",
+                "description": "Summary of call patterns",
+                "properties": {
+                  "averageDailyCallCount": {
+                    "type": "number",
+                    "description": "Average number of calls per day",
+                    "example": 5.2
+                  },
+                  "averageCallDuration": {
+                    "type": "number",
+                    "description": "Average call duration in seconds",
+                    "example": 186
+                  },
+                  "topCallingHours": {
+                    "type": "array",
+                    "description": "Hours of the day with most calls (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [9, 12, 18]
+                  }
+                }
+              },
+              "messagePatterns": {
+                "type": "object",
+                "description": "Summary of messaging patterns",
+                "properties": {
+                  "averageDailyMessageCount": {
+                    "type": "number",
+                    "description": "Average number of messages per day",
+                    "example": 42.7
+                  },
+                  "averageMessageLength": {
+                    "type": "number",
+                    "description": "Average message length in characters",
+                    "example": 68
+                  },
+                  "topMessagingHours": {
+                    "type": "array",
+                    "description": "Hours of the day with most messages (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [8, 13, 20]
+                  }
+                }
+              },
+              "dataUsagePatterns": {
+                "type": "object",
+                "description": "Summary of data usage patterns",
+                "properties": {
+                  "averageDailyDataUsage": {
+                    "type": "number",
+                    "description": "Average data usage per day in MB",
+                    "example": 256.8
+                  },
+                  "peakDataUsageHours": {
+                    "type": "array",
+                    "description": "Hours of the day with peak data usage (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [12, 19, 22]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "profileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the profile to authenticate against (optional, will use default if not provided)",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "authenticationWindow": {
+            "type": "integer",
+            "description": "Time window in hours to analyze for authentication (1-72)",
+            "minimum": 1,
+            "maximum": 72,
+            "default": 24,
+            "example": 12
+          },
+          "minConfidenceThreshold": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Minimum confidence threshold for successful authentication (0-1)",
+            "default": 0.7,
+            "example": 0.8
+          }
+        }
+      },
+      "AuthenticationResponse": {
+        "type": "object",
+        "required": ["authenticated", "confidenceScore"],
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "description": "Whether the authentication was successful",
+            "example": true
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score of the authentication (0-1)",
+            "example": 0.92
+          },
+          "factors": {
+            "type": "array",
+            "description": "Factors that contributed to the authentication decision",
+            "items": {
+              "type": "object",
+              "properties": {
+                "factor": {
+                  "type": "string",
+                  "description": "Name of the factor",
+                  "example": "callPatternMatch"
+                },
+                "score": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Score for this factor (0-1)",
+                  "example": 0.95
+                },
+                "weight": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Weight of this factor in the overall score (0-1)",
+                  "example": 0.4
+                }
+              }
+            }
+          },
+          "anomalies": {
+            "type": "array",
+            "description": "Anomalies detected during authentication",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of anomaly",
+                  "example": "unusualCallingHours"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"],
+                  "description": "Severity of the anomaly",
+                  "example": "low"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the anomaly",
+                  "example": "Calls made outside typical calling hours"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AnalysisRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "analysisWindow"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for pattern analysis",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "analysisWindow": {
+            "type": "integer",
+            "description": "Time window in days to analyze (1-90)",
+            "minimum": 1,
+            "maximum": 90,
+            "example": 30
+          },
+          "patternTypes": {
+            "type": "array",
+            "description": "Types of communication patterns to analyze",
+            "items": {
+              "type": "string",
+              "enum": ["calls", "messages", "data", "all"]
+            },
+            "default": ["all"],
+            "example": ["calls", "messages"]
+          }
+        }
+      },
+      "AnalysisResponse": {
+        "type": "object",
+        "required": ["analysisId", "analysisTimestamp", "patternSummary"],
+        "properties": {
+          "analysisId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the analysis",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "analysisTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the analysis was performed",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "patternSummary": {
+            "type": "object",
+            "description": "Summary of the communication patterns",
+            "properties": {
+              "callPatterns": {
+                "type": "object",
+                "description": "Summary of call patterns",
+                "properties": {
+                  "averageDailyCallCount": {
+                    "type": "number",
+                    "description": "Average number of calls per day",
+                    "example": 5.2
+                  },
+                  "averageCallDuration": {
+                    "type": "number",
+                    "description": "Average call duration in seconds",
+                    "example": 186
+                  },
+                  "topCallingHours": {
+                    "type": "array",
+                    "description": "Hours of the day with most calls (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [9, 12, 18]
+                  },
+                  "callDirectionRatio": {
+                    "type": "object",
+                    "description": "Ratio of outgoing to incoming calls",
+                    "properties": {
+                      "outgoing": {
+                        "type": "number",
+                        "description": "Percentage of outgoing calls",
+                        "example": 60
+                      },
+                      "incoming": {
+                        "type": "number",
+                        "description": "Percentage of incoming calls",
+                        "example": 40
+                      }
+                    }
+                  },
+                  "weekdayDistribution": {
+                    "type": "object",
+                    "description": "Distribution of calls across weekdays",
+                    "properties": {
+                      "monday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Monday",
+                        "example": 18
+                      },
+                      "tuesday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Tuesday",
+                        "example": 15
+                      },
+                      "wednesday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Wednesday",
+                        "example": 20
+                      },
+                      "thursday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Thursday",
+                        "example": 22
+                      },
+                      "friday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Friday",
+                        "example": 15
+                      },
+                      "saturday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Saturday",
+                        "example": 5
+                      },
+                      "sunday": {
+                        "type": "number",
+                        "description": "Percentage of calls on Sunday",
+                        "example": 5
+                      }
+                    }
+                  }
+                }
+              },
+              "messagePatterns": {
+                "type": "object",
+                "description": "Summary of messaging patterns",
+                "properties": {
+                  "averageDailyMessageCount": {
+                    "type": "number",
+                    "description": "Average number of messages per day",
+                    "example": 42.7
+                  },
+                  "averageMessageLength": {
+                    "type": "number",
+                    "description": "Average message length in characters",
+                    "example": 68
+                  },
+                  "topMessagingHours": {
+                    "type": "array",
+                    "description": "Hours of the day with most messages (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [8, 13, 20]
+                  },
+                  "messageDirectionRatio": {
+                    "type": "object",
+                    "description": "Ratio of outgoing to incoming messages",
+                    "properties": {
+                      "outgoing": {
+                        "type": "number",
+                        "description": "Percentage of outgoing messages",
+                        "example": 55
+                      },
+                      "incoming": {
+                        "type": "number",
+                        "description": "Percentage of incoming messages",
+                        "example": 45
+                      }
+                    }
+                  },
+                  "weekdayDistribution": {
+                    "type": "object",
+                    "description": "Distribution of messages across weekdays",
+                    "properties": {
+                      "monday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Monday",
+                        "example": 15
+                      },
+                      "tuesday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Tuesday",
+                        "example": 18
+                      },
+                      "wednesday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Wednesday",
+                        "example": 17
+                      },
+                      "thursday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Thursday",
+                        "example": 20
+                      },
+                      "friday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Friday",
+                        "example": 18
+                      },
+                      "saturday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Saturday",
+                        "example": 7
+                      },
+                      "sunday": {
+                        "type": "number",
+                        "description": "Percentage of messages on Sunday",
+                        "example": 5
+                      }
+                    }
+                  }
+                }
+              },
+              "dataUsagePatterns": {
+                "type": "object",
+                "description": "Summary of data usage patterns",
+                "properties": {
+                  "averageDailyDataUsage": {
+                    "type": "number",
+                    "description": "Average data usage per day in MB",
+                    "example": 256.8
+                  },
+                  "peakDataUsageHours": {
+                    "type": "array",
+                    "description": "Hours of the day with peak data usage (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [12, 19, 22]
+                  },
+                  "weekdayDistribution": {
+                    "type": "object",
+                    "description": "Distribution of data usage across weekdays",
+                    "properties": {
+                      "monday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Monday",
+                        "example": 14
+                      },
+                      "tuesday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Tuesday",
+                        "example": 15
+                      },
+                      "wednesday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Wednesday",
+                        "example": 16
+                      },
+                      "thursday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Thursday",
+                        "example": 15
+                      },
+                      "friday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Friday",
+                        "example": 15
+                      },
+                      "saturday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Saturday",
+                        "example": 12
+                      },
+                      "sunday": {
+                        "type": "number",
+                        "description": "Percentage of data usage on Sunday",
+                        "example": 13
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "uniquePatternFeatures": {
+            "type": "array",
+            "description": "Unique features identified in the communication patterns",
+            "items": {
+              "type": "object",
+              "properties": {
+                "feature": {
+                  "type": "string",
+                  "description": "Name of the feature",
+                  "example": "consistentEveningCalls"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the feature",
+                  "example": "Consistent pattern of calls between 7-8 PM on weekdays"
+                },
+                "uniquenessScore": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Score indicating how unique this feature is (0-1)",
+                  "example": 0.85
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

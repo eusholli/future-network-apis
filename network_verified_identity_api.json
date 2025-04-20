@@ -1,0 +1,532 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Network-Verified Identity API",
+    "description": "This API provides a way for applications to verify a user's identity using telecom network data. It leverages the fact that telecom operators have verified the identity of their subscribers through KYC processes.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "identity",
+      "description": "Identity verification operations"
+    },
+    {
+      "name": "verification",
+      "description": "Verification request and status operations"
+    }
+  ],
+  "paths": {
+    "/identity/verify": {
+      "post": {
+        "tags": ["identity", "verification"],
+        "summary": "Verify a user's identity using telecom network data",
+        "description": "Initiates an identity verification process using telecom network data. This endpoint requires user consent and returns a verification request ID that can be used to check the status of the verification.",
+        "operationId": "verifyIdentity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Verification request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/verify/{requestId}": {
+      "get": {
+        "tags": ["identity", "verification"],
+        "summary": "Get the status of an identity verification request",
+        "description": "Retrieves the current status and results of an identity verification request.",
+        "operationId": "getVerificationStatus",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "ID of the verification request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verification status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Verification request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/identity/attributes": {
+      "post": {
+        "tags": ["identity"],
+        "summary": "Verify specific identity attributes",
+        "description": "Verifies specific identity attributes against telecom network data without revealing the actual data.",
+        "operationId": "verifyAttributes",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttributeVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attributes verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributeVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "VerificationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "callbackUrl"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user to verify in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for identity verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive verification result callback",
+            "example": "https://example.com/callbacks/identity"
+          },
+          "verificationLevel": {
+            "type": "string",
+            "enum": ["basic", "standard", "high"],
+            "description": "Level of verification assurance required",
+            "default": "standard"
+          },
+          "requestedAttributes": {
+            "type": "array",
+            "description": "List of identity attributes to verify",
+            "items": {
+              "type": "string",
+              "enum": ["name", "address", "dateOfBirth", "nationalId"]
+            },
+            "example": ["name", "address"]
+          }
+        }
+      },
+      "VerificationResponse": {
+        "type": "object",
+        "required": ["requestId", "status"],
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the verification request",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "processing", "completed", "failed"],
+            "description": "Current status of the verification request",
+            "example": "pending"
+          },
+          "estimatedCompletionTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Estimated time when verification will complete",
+            "example": "2025-04-20T16:30:00Z"
+          }
+        }
+      },
+      "VerificationStatus": {
+        "type": "object",
+        "required": ["requestId", "status"],
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the verification request",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "processing", "completed", "failed"],
+            "description": "Current status of the verification request",
+            "example": "completed"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when verification was completed",
+            "example": "2025-04-20T16:25:43Z"
+          },
+          "result": {
+            "type": "object",
+            "description": "Verification result details",
+            "properties": {
+              "verified": {
+                "type": "boolean",
+                "description": "Whether the identity was successfully verified",
+                "example": true
+              },
+              "confidenceScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Confidence score of the verification (0-1)",
+                "example": 0.95
+              },
+              "verifiedAttributes": {
+                "type": "array",
+                "description": "List of successfully verified attributes",
+                "items": {
+                  "type": "string"
+                },
+                "example": ["name", "address"]
+              }
+            }
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "Reason for verification failure if status is 'failed'",
+            "example": "Unable to match provided information with network data"
+          }
+        }
+      },
+      "AttributeVerificationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "attributes"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for attribute verification",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "attributes": {
+            "type": "array",
+            "description": "List of attributes to verify",
+            "items": {
+              "$ref": "#/components/schemas/AttributeToVerify"
+            }
+          }
+        }
+      },
+      "AttributeToVerify": {
+        "type": "object",
+        "required": ["name", "value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the attribute to verify",
+            "enum": ["name", "address", "dateOfBirth", "nationalId"],
+            "example": "name"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value to verify against",
+            "example": "John Doe"
+          },
+          "matchType": {
+            "type": "string",
+            "description": "Type of matching to perform",
+            "enum": ["exact", "fuzzy", "partial"],
+            "default": "exact",
+            "example": "fuzzy"
+          }
+        }
+      },
+      "AttributeVerificationResponse": {
+        "type": "object",
+        "required": ["results"],
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Results of attribute verification",
+            "items": {
+              "type": "object",
+              "required": ["name", "verified"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the verified attribute",
+                  "example": "name"
+                },
+                "verified": {
+                  "type": "boolean",
+                  "description": "Whether the attribute was verified successfully",
+                  "example": true
+                },
+                "confidenceScore": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Confidence score of the verification (0-1)",
+                  "example": 0.92
+                }
+              }
+            }
+          },
+          "overallResult": {
+            "type": "object",
+            "properties": {
+              "verified": {
+                "type": "boolean",
+                "description": "Whether all attributes were verified successfully",
+                "example": true
+              },
+              "confidenceScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Overall confidence score of the verification (0-1)",
+                "example": 0.90
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

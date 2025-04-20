@@ -1,0 +1,2799 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Secure Multi-Factor Authentication API",
+    "description": "This API provides secure multi-factor authentication services using telecom network data to enhance security and prevent AI-driven attacks.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "authentication",
+      "description": "Authentication operations"
+    },
+    {
+      "name": "factors",
+      "description": "Authentication factor operations"
+    },
+    {
+      "name": "sessions",
+      "description": "Authentication session operations"
+    },
+    {
+      "name": "policies",
+      "description": "Authentication policy operations"
+    }
+  ],
+  "paths": {
+    "/auth/mfa/session/create": {
+      "post": {
+        "tags": ["sessions"],
+        "summary": "Create authentication session",
+        "description": "Creates a new multi-factor authentication session.",
+        "operationId": "createAuthSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/session/{sessionId}": {
+      "get": {
+        "tags": ["sessions"],
+        "summary": "Get authentication session",
+        "description": "Retrieves the status and details of an authentication session.",
+        "operationId": "getAuthSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "description": "ID of the authentication session",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/factors/register": {
+      "post": {
+        "tags": ["factors"],
+        "summary": "Register authentication factor",
+        "description": "Registers a new authentication factor for a user.",
+        "operationId": "registerAuthFactor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FactorRegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Factor registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FactorRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Factor already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/factors/list": {
+      "get": {
+        "tags": ["factors"],
+        "summary": "List authentication factors",
+        "description": "Lists all registered authentication factors for a user.",
+        "operationId": "listAuthFactors",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "ID of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Factors retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FactorListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/factors/{factorId}": {
+      "delete": {
+        "tags": ["factors"],
+        "summary": "Delete authentication factor",
+        "description": "Deletes a registered authentication factor.",
+        "operationId": "deleteAuthFactor",
+        "parameters": [
+          {
+            "name": "factorId",
+            "in": "path",
+            "description": "ID of the authentication factor",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Factor deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Factor not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/authenticate/phone": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Authenticate with phone",
+        "description": "Authenticates a user using phone-based authentication.",
+        "operationId": "authenticateWithPhone",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/authenticate/biometric": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Authenticate with biometrics",
+        "description": "Authenticates a user using biometric authentication.",
+        "operationId": "authenticateWithBiometric",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/BiometricAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type - Invalid biometric format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/authenticate/token": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Authenticate with token",
+        "description": "Authenticates a user using token-based authentication.",
+        "operationId": "authenticateWithToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/authenticate/network": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Authenticate with network",
+        "description": "Authenticates a user using telecom network-based authentication.",
+        "operationId": "authenticateWithNetwork",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/authenticate/multi": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Multi-factor authenticate",
+        "description": "Authenticates a user using multiple authentication factors.",
+        "operationId": "authenticateMultiFactor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultiFactorAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/policies": {
+      "post": {
+        "tags": ["policies"],
+        "summary": "Create authentication policy",
+        "description": "Creates a new authentication policy.",
+        "operationId": "createAuthPolicy",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Policy created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["policies"],
+        "summary": "List authentication policies",
+        "description": "Lists all authentication policies.",
+        "operationId": "listAuthPolicies",
+        "responses": {
+          "200": {
+            "description": "Policies retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/policies/{policyId}": {
+      "get": {
+        "tags": ["policies"],
+        "summary": "Get authentication policy",
+        "description": "Retrieves an authentication policy.",
+        "operationId": "getAuthPolicy",
+        "parameters": [
+          {
+            "name": "policyId",
+            "in": "path",
+            "description": "ID of the authentication policy",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Policy retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["policies"],
+        "summary": "Update authentication policy",
+        "description": "Updates an authentication policy.",
+        "operationId": "updateAuthPolicy",
+        "parameters": [
+          {
+            "name": "policyId",
+            "in": "path",
+            "description": "ID of the authentication policy",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Policy updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["policies"],
+        "summary": "Delete authentication policy",
+        "description": "Deletes an authentication policy.",
+        "operationId": "deleteAuthPolicy",
+        "parameters": [
+          {
+            "name": "policyId",
+            "in": "path",
+            "description": "ID of the authentication policy",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Policy deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/mfa/ai-detection": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Detect AI impersonation",
+        "description": "Analyzes authentication data to detect potential AI impersonation.",
+        "operationId": "detectAiImpersonation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiDetectionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI detection completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiDetectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SessionCreationRequest": {
+        "type": "object",
+        "required": ["userId", "authFactors", "callbackUrl"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "authFactors": {
+            "type": "array",
+            "description": "Authentication factors to include in the session",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "biometric", "network"]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "description": "Time in seconds until the session expires",
+            "minimum": 300,
+            "maximum": 86400,
+            "default": 3600,
+            "example": 3600
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive authentication results",
+            "example": "https://example.com/callbacks/authentication"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata for the session",
+            "example": {
+              "requestId": "req-456",
+              "ipAddress": "192.0.2.1"
+            }
+          },
+          "redirectUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to redirect the user after authentication",
+            "example": "https://example.com/authentication/complete"
+          },
+          "policyId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the authentication policy to apply",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "SessionResponse": {
+        "type": "object",
+        "required": ["sessionId", "status", "createdAt", "userId", "authFactors"],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["created", "in_progress", "completed", "expired", "failed"],
+            "description": "Current status of the authentication session",
+            "example": "created"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the session was created",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the session expires",
+            "example": "2025-04-20T17:30:00Z"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the session was completed",
+            "example": null
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "authFactors": {
+            "type": "array",
+            "description": "Authentication factors included in the session",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "biometric", "network"]
+          },
+          "authUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL for the user to complete the authentication",
+            "example": "https://auth.telecom-network.example.com/session/123e4567-e89b-12d3-a456-426614174001"
+          },
+          "authResults": {
+            "type": "object",
+            "description": "Results of completed authentications",
+            "properties": {
+              "phone": {
+                "type": "object",
+                "description": "Phone authentication result",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "completed", "failed"],
+                    "description": "Status of the phone authentication",
+                    "example": "pending"
+                  },
+                  "authenticated": {
+                    "type": "boolean",
+                    "description": "Whether the phone authentication succeeded",
+                    "example": null
+                  }
+                }
+              },
+              "biometric": {
+                "type": "object",
+                "description": "Biometric authentication result",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "completed", "failed"],
+                    "description": "Status of the biometric authentication",
+                    "example": "pending"
+                  },
+                  "authenticated": {
+                    "type": "boolean",
+                    "description": "Whether the biometric authentication succeeded",
+                    "example": null
+                  }
+                }
+              },
+              "network": {
+                "type": "object",
+                "description": "Network authentication result",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "completed", "failed"],
+                    "description": "Status of the network authentication",
+                    "example": "pending"
+                  },
+                  "authenticated": {
+                    "type": "boolean",
+                    "description": "Whether the network authentication succeeded",
+                    "example": null
+                  }
+                }
+              }
+            }
+          },
+          "overallResult": {
+            "type": "object",
+            "description": "Overall authentication result",
+            "properties": {
+              "authenticated": {
+                "type": "boolean",
+                "description": "Whether the authentication was successful",
+                "example": null
+              },
+              "confidenceScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Overall confidence score (0-1)",
+                "example": null
+              },
+              "aiImpersonationRisk": {
+                "type": "string",
+                "enum": ["none", "low", "medium", "high", "critical"],
+                "description": "Level of AI impersonation risk",
+                "example": null
+              }
+            }
+          },
+          "policyId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the applied authentication policy",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "FactorRegistrationRequest": {
+        "type": "object",
+        "required": ["userId", "factorType", "consentToken"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "factorType": {
+            "type": "string",
+            "enum": ["phone", "biometric", "token", "network", "behavioral"],
+            "description": "Type of authentication factor",
+            "example": "phone"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format (required for phone factor)",
+            "example": "+12025550123"
+          },
+          "biometricType": {
+            "type": "string",
+            "enum": ["face", "voice", "fingerprint"],
+            "description": "Type of biometric factor (required for biometric factor)",
+            "example": "face"
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": ["totp", "hardware", "push"],
+            "description": "Type of token factor (required for token factor)",
+            "example": "totp"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for factor registration",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata for the factor",
+            "example": {
+              "deviceId": "device-789",
+              "deviceName": "iPhone 15"
+            }
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive registration results",
+            "example": "https://example.com/callbacks/factor-registration"
+          }
+        }
+      },
+      "FactorRegistrationResponse": {
+        "type": "object",
+        "required": ["factorId", "userId", "factorType", "status"],
+        "properties": {
+          "factorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the authentication factor",
+            "example": "123e4567-e89b-12d3-a456-426614174002"
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "factorType": {
+            "type": "string",
+            "enum": ["phone", "biometric", "token", "network", "behavioral"],
+            "description": "Type of authentication factor",
+            "example": "phone"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "pending", "disabled"],
+            "description": "Status of the authentication factor",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the factor was created",
+            "example": "2025-04-20T16:35:00Z"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the factor was last used",
+            "example": null
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format (for phone factor)",
+            "example": "+12025550123"
+          },
+          "biometricType": {
+            "type": "string",
+            "enum": ["face", "voice", "fingerprint"],
+            "description": "Type of biometric factor (for biometric factor)",
+            "example": null
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": ["totp", "hardware", "push"],
+            "description": "Type of token factor (for token factor)",
+            "example": null
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata for the factor",
+            "example": {
+              "deviceId": "device-789",
+              "deviceName": "iPhone 15"
+            }
+          },
+          "setupData": {
+            "type": "object",
+            "description": "Data needed to complete factor setup (if applicable)",
+            "example": null
+          }
+        }
+      },
+      "FactorListResponse": {
+        "type": "object",
+        "required": ["userId", "factors"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "factors": {
+            "type": "array",
+            "description": "List of authentication factors",
+            "items": {
+              "type": "object",
+              "required": ["factorId", "factorType", "status"],
+              "properties": {
+                "factorId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the authentication factor",
+                  "example": "123e4567-e89b-12d3-a456-426614174002"
+                },
+                "factorType": {
+                  "type": "string",
+                  "enum": ["phone", "biometric", "token", "network", "behavioral"],
+                  "description": "Type of authentication factor",
+                  "example": "phone"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "pending", "disabled"],
+                  "description": "Status of the authentication factor",
+                  "example": "active"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the factor was created",
+                  "example": "2025-04-20T16:35:00Z"
+                },
+                "lastUsedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the factor was last used",
+                  "example": "2025-04-20T17:00:00Z"
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "description": "Phone number in E.164 format (for phone factor)",
+                  "example": "+12025550123"
+                },
+                "biometricType": {
+                  "type": "string",
+                  "enum": ["face", "voice", "fingerprint"],
+                  "description": "Type of biometric factor (for biometric factor)",
+                  "example": null
+                },
+                "tokenType": {
+                  "type": "string",
+                  "enum": ["totp", "hardware", "push"],
+                  "description": "Type of token factor (for token factor)",
+                  "example": null
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "Additional metadata for the factor",
+                  "example": {
+                    "deviceId": "device-789",
+                    "deviceName": "iPhone 15"
+                  }
+                }
+              }
+            },
+            "example": [
+              {
+                "factorId": "123e4567-e89b-12d3-a456-426614174002",
+                "factorType": "phone",
+                "status": "active",
+                "createdAt": "2025-04-20T16:35:00Z",
+                "lastUsedAt": "2025-04-20T17:00:00Z",
+                "phoneNumber": "+12025550123",
+                "metadata": {
+                  "deviceId": "device-789",
+                  "deviceName": "iPhone 15"
+                }
+              },
+              {
+                "factorId": "123e4567-e89b-12d3-a456-426614174003",
+                "factorType": "biometric",
+                "status": "active",
+                "createdAt": "2025-04-20T16:40:00Z",
+                "lastUsedAt": "2025-04-20T17:05:00Z",
+                "biometricType": "face",
+                "metadata": {
+                  "deviceId": "device-789",
+                  "deviceName": "iPhone 15"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "PhoneAuthRequest": {
+        "type": "object",
+        "required": ["userId", "phoneNumber", "consentToken"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "verificationCode": {
+            "type": "string",
+            "description": "Verification code (if using OTP)",
+            "example": "123456"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "authMethod": {
+            "type": "string",
+            "enum": ["sms", "call", "silent", "network"],
+            "description": "Method to use for phone authentication",
+            "default": "network",
+            "example": "network"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive authentication results",
+            "example": "https://example.com/callbacks/phone-authentication"
+          }
+        }
+      },
+      "BiometricAuthRequest": {
+        "type": "object",
+        "required": ["userId", "biometricType", "consentToken"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "biometricType": {
+            "type": "string",
+            "enum": ["face", "voice", "fingerprint"],
+            "description": "Type of biometric authentication",
+            "example": "face"
+          },
+          "biometricSample": {
+            "type": "string",
+            "format": "binary",
+            "description": "Biometric sample (image or audio)"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "livenessCheck": {
+            "type": "boolean",
+            "description": "Whether to perform liveness check",
+            "default": true,
+            "example": true
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive authentication results",
+            "example": "https://example.com/callbacks/biometric-authentication"
+          }
+        }
+      },
+      "TokenAuthRequest": {
+        "type": "object",
+        "required": ["userId", "tokenType", "tokenValue"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": ["totp", "hardware", "push"],
+            "description": "Type of token authentication",
+            "example": "totp"
+          },
+          "tokenValue": {
+            "type": "string",
+            "description": "Token value (e.g., TOTP code)",
+            "example": "123456"
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive authentication results",
+            "example": "https://example.com/callbacks/token-authentication"
+          }
+        }
+      },
+      "NetworkAuthRequest": {
+        "type": "object",
+        "required": ["userId", "phoneNumber", "consentToken"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive authentication results",
+            "example": "https://example.com/callbacks/network-authentication"
+          }
+        }
+      },
+      "MultiFactorAuthRequest": {
+        "type": "object",
+        "required": ["userId", "authFactors", "consentToken"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "authFactors": {
+            "type": "array",
+            "description": "Authentication factors to use",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "biometric", "network"]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "verificationCode": {
+            "type": "string",
+            "description": "Verification code (if using OTP)",
+            "example": "123456"
+          },
+          "biometricType": {
+            "type": "string",
+            "enum": ["face", "voice", "fingerprint"],
+            "description": "Type of biometric authentication",
+            "example": "face"
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": ["totp", "hardware", "push"],
+            "description": "Type of token authentication",
+            "example": "totp"
+          },
+          "tokenValue": {
+            "type": "string",
+            "description": "Token value (e.g., TOTP code)",
+            "example": "123456"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "policyId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the authentication policy to apply",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive authentication results",
+            "example": "https://example.com/callbacks/multi-factor-authentication"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "required": ["authId", "userId", "status", "authFactors"],
+        "properties": {
+          "authId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the authentication",
+            "example": "123e4567-e89b-12d3-a456-426614174004"
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["success", "failed", "pending"],
+            "description": "Status of the authentication",
+            "example": "success"
+          },
+          "authenticatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the authentication was completed",
+            "example": "2025-04-20T17:10:00Z"
+          },
+          "authFactors": {
+            "type": "array",
+            "description": "Authentication factors used",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "network"]
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall confidence score (0-1)",
+            "example": 0.95
+          },
+          "factorResults": {
+            "type": "object",
+            "description": "Results of individual authentication factors",
+            "properties": {
+              "phone": {
+                "type": "object",
+                "description": "Phone authentication result",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "description": "Whether the phone authentication succeeded",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.98
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": ["sms", "call", "silent", "network"],
+                    "description": "Method used for phone authentication",
+                    "example": "network"
+                  }
+                }
+              },
+              "network": {
+                "type": "object",
+                "description": "Network authentication result",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "description": "Whether the network authentication succeeded",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.92
+                  }
+                }
+              }
+            }
+          },
+          "aiImpersonationRisk": {
+            "type": "object",
+            "description": "Assessment of AI impersonation risk",
+            "properties": {
+              "riskLevel": {
+                "type": "string",
+                "enum": ["none", "low", "medium", "high", "critical"],
+                "description": "Level of AI impersonation risk",
+                "example": "none"
+              },
+              "riskScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "AI impersonation risk score (0-1)",
+                "example": 0.05
+              }
+            }
+          },
+          "authToken": {
+            "type": "string",
+            "description": "Authentication token (if successful)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "tokenExpiry": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expiry time of the authentication token",
+            "example": "2025-04-20T18:10:00Z"
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "policyId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the applied authentication policy",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "PolicyCreationRequest": {
+        "type": "object",
+        "required": ["name", "requiredFactors"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the authentication policy",
+            "example": "High Security Policy"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the authentication policy",
+            "example": "Policy for high-security operations requiring multiple factors"
+          },
+          "requiredFactors": {
+            "type": "array",
+            "description": "Authentication factors required by the policy",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "biometric", "network"]
+          },
+          "minFactorCount": {
+            "type": "integer",
+            "description": "Minimum number of factors required",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 2
+          },
+          "riskBasedAuth": {
+            "type": "boolean",
+            "description": "Whether to use risk-based authentication",
+            "default": true,
+            "example": true
+          },
+          "aiDetection": {
+            "type": "boolean",
+            "description": "Whether to enable AI impersonation detection",
+            "default": true,
+            "example": true
+          },
+          "maxAttempts": {
+            "type": "integer",
+            "description": "Maximum number of authentication attempts",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 3,
+            "example": 3
+          },
+          "lockoutPeriod": {
+            "type": "integer",
+            "description": "Lockout period in seconds after max attempts",
+            "minimum": 60,
+            "maximum": 86400,
+            "default": 300,
+            "example": 300
+          },
+          "sessionLifetime": {
+            "type": "integer",
+            "description": "Authentication session lifetime in seconds",
+            "minimum": 300,
+            "maximum": 86400,
+            "default": 3600,
+            "example": 3600
+          },
+          "tokenLifetime": {
+            "type": "integer",
+            "description": "Authentication token lifetime in seconds",
+            "minimum": 300,
+            "maximum": 86400,
+            "default": 3600,
+            "example": 3600
+          },
+          "conditionalRules": {
+            "type": "array",
+            "description": "Conditional rules for the policy",
+            "items": {
+              "type": "object",
+              "required": ["condition", "requiredFactors"],
+              "properties": {
+                "condition": {
+                  "type": "string",
+                  "description": "Condition for the rule",
+                  "example": "ip_range=192.0.2.0/24"
+                },
+                "requiredFactors": {
+                  "type": "array",
+                  "description": "Authentication factors required by the rule",
+                  "items": {
+                    "type": "string",
+                    "enum": ["phone", "biometric", "token", "network", "behavioral"]
+                  },
+                  "example": ["phone"]
+                },
+                "minFactorCount": {
+                  "type": "integer",
+                  "description": "Minimum number of factors required",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "example": 1
+                }
+              }
+            },
+            "example": [
+              {
+                "condition": "ip_range=192.0.2.0/24",
+                "requiredFactors": ["phone"],
+                "minFactorCount": 1
+              },
+              {
+                "condition": "risk_score>0.7",
+                "requiredFactors": ["phone", "biometric", "network"],
+                "minFactorCount": 3
+              }
+            ]
+          }
+        }
+      },
+      "PolicyUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the authentication policy",
+            "example": "High Security Policy"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the authentication policy",
+            "example": "Policy for high-security operations requiring multiple factors"
+          },
+          "requiredFactors": {
+            "type": "array",
+            "description": "Authentication factors required by the policy",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "biometric", "network"]
+          },
+          "minFactorCount": {
+            "type": "integer",
+            "description": "Minimum number of factors required",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 2
+          },
+          "riskBasedAuth": {
+            "type": "boolean",
+            "description": "Whether to use risk-based authentication",
+            "example": true
+          },
+          "aiDetection": {
+            "type": "boolean",
+            "description": "Whether to enable AI impersonation detection",
+            "example": true
+          },
+          "maxAttempts": {
+            "type": "integer",
+            "description": "Maximum number of authentication attempts",
+            "minimum": 1,
+            "maximum": 10,
+            "example": 3
+          },
+          "lockoutPeriod": {
+            "type": "integer",
+            "description": "Lockout period in seconds after max attempts",
+            "minimum": 60,
+            "maximum": 86400,
+            "example": 300
+          },
+          "sessionLifetime": {
+            "type": "integer",
+            "description": "Authentication session lifetime in seconds",
+            "minimum": 300,
+            "maximum": 86400,
+            "example": 3600
+          },
+          "tokenLifetime": {
+            "type": "integer",
+            "description": "Authentication token lifetime in seconds",
+            "minimum": 300,
+            "maximum": 86400,
+            "example": 3600
+          },
+          "conditionalRules": {
+            "type": "array",
+            "description": "Conditional rules for the policy",
+            "items": {
+              "type": "object",
+              "required": ["condition", "requiredFactors"],
+              "properties": {
+                "condition": {
+                  "type": "string",
+                  "description": "Condition for the rule",
+                  "example": "ip_range=192.0.2.0/24"
+                },
+                "requiredFactors": {
+                  "type": "array",
+                  "description": "Authentication factors required by the rule",
+                  "items": {
+                    "type": "string",
+                    "enum": ["phone", "biometric", "token", "network", "behavioral"]
+                  },
+                  "example": ["phone"]
+                },
+                "minFactorCount": {
+                  "type": "integer",
+                  "description": "Minimum number of factors required",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "example": 1
+                }
+              }
+            },
+            "example": [
+              {
+                "condition": "ip_range=192.0.2.0/24",
+                "requiredFactors": ["phone"],
+                "minFactorCount": 1
+              },
+              {
+                "condition": "risk_score>0.7",
+                "requiredFactors": ["phone", "biometric", "network"],
+                "minFactorCount": 3
+              }
+            ]
+          }
+        }
+      },
+      "PolicyResponse": {
+        "type": "object",
+        "required": ["policyId", "name", "requiredFactors", "createdAt"],
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the authentication policy",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the authentication policy",
+            "example": "High Security Policy"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the authentication policy",
+            "example": "Policy for high-security operations requiring multiple factors"
+          },
+          "requiredFactors": {
+            "type": "array",
+            "description": "Authentication factors required by the policy",
+            "items": {
+              "type": "string",
+              "enum": ["phone", "biometric", "token", "network", "behavioral"]
+            },
+            "example": ["phone", "biometric", "network"]
+          },
+          "minFactorCount": {
+            "type": "integer",
+            "description": "Minimum number of factors required",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 2
+          },
+          "riskBasedAuth": {
+            "type": "boolean",
+            "description": "Whether to use risk-based authentication",
+            "example": true
+          },
+          "aiDetection": {
+            "type": "boolean",
+            "description": "Whether to enable AI impersonation detection",
+            "example": true
+          },
+          "maxAttempts": {
+            "type": "integer",
+            "description": "Maximum number of authentication attempts",
+            "minimum": 1,
+            "maximum": 10,
+            "example": 3
+          },
+          "lockoutPeriod": {
+            "type": "integer",
+            "description": "Lockout period in seconds after max attempts",
+            "minimum": 60,
+            "maximum": 86400,
+            "example": 300
+          },
+          "sessionLifetime": {
+            "type": "integer",
+            "description": "Authentication session lifetime in seconds",
+            "minimum": 300,
+            "maximum": 86400,
+            "example": 3600
+          },
+          "tokenLifetime": {
+            "type": "integer",
+            "description": "Authentication token lifetime in seconds",
+            "minimum": 300,
+            "maximum": 86400,
+            "example": 3600
+          },
+          "conditionalRules": {
+            "type": "array",
+            "description": "Conditional rules for the policy",
+            "items": {
+              "type": "object",
+              "required": ["condition", "requiredFactors"],
+              "properties": {
+                "condition": {
+                  "type": "string",
+                  "description": "Condition for the rule",
+                  "example": "ip_range=192.0.2.0/24"
+                },
+                "requiredFactors": {
+                  "type": "array",
+                  "description": "Authentication factors required by the rule",
+                  "items": {
+                    "type": "string",
+                    "enum": ["phone", "biometric", "token", "network", "behavioral"]
+                  },
+                  "example": ["phone"]
+                },
+                "minFactorCount": {
+                  "type": "integer",
+                  "description": "Minimum number of factors required",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "example": 1
+                }
+              }
+            },
+            "example": [
+              {
+                "condition": "ip_range=192.0.2.0/24",
+                "requiredFactors": ["phone"],
+                "minFactorCount": 1
+              },
+              {
+                "condition": "risk_score>0.7",
+                "requiredFactors": ["phone", "biometric", "network"],
+                "minFactorCount": 3
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the policy was created",
+            "example": "2025-04-20T16:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the policy was last updated",
+            "example": "2025-04-20T16:00:00Z"
+          }
+        }
+      },
+      "PolicyListResponse": {
+        "type": "object",
+        "required": ["policies"],
+        "properties": {
+          "policies": {
+            "type": "array",
+            "description": "List of authentication policies",
+            "items": {
+              "type": "object",
+              "required": ["policyId", "name", "createdAt"],
+              "properties": {
+                "policyId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the authentication policy",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the authentication policy",
+                  "example": "High Security Policy"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the authentication policy",
+                  "example": "Policy for high-security operations requiring multiple factors"
+                },
+                "requiredFactors": {
+                  "type": "array",
+                  "description": "Authentication factors required by the policy",
+                  "items": {
+                    "type": "string",
+                    "enum": ["phone", "biometric", "token", "network", "behavioral"]
+                  },
+                  "example": ["phone", "biometric", "network"]
+                },
+                "minFactorCount": {
+                  "type": "integer",
+                  "description": "Minimum number of factors required",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "example": 2
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the policy was created",
+                  "example": "2025-04-20T16:00:00Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the policy was last updated",
+                  "example": "2025-04-20T16:00:00Z"
+                }
+              }
+            },
+            "example": [
+              {
+                "policyId": "123e4567-e89b-12d3-a456-426614174000",
+                "name": "High Security Policy",
+                "description": "Policy for high-security operations requiring multiple factors",
+                "requiredFactors": ["phone", "biometric", "network"],
+                "minFactorCount": 2,
+                "createdAt": "2025-04-20T16:00:00Z",
+                "updatedAt": "2025-04-20T16:00:00Z"
+              },
+              {
+                "policyId": "123e4567-e89b-12d3-a456-426614174005",
+                "name": "Standard Security Policy",
+                "description": "Policy for standard operations",
+                "requiredFactors": ["phone", "network"],
+                "minFactorCount": 1,
+                "createdAt": "2025-04-20T16:05:00Z",
+                "updatedAt": "2025-04-20T16:05:00Z"
+              }
+            ]
+          }
+        }
+      },
+      "AiDetectionRequest": {
+        "type": "object",
+        "required": ["userId", "phoneNumber", "consentToken"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for AI detection",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "authId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of an existing authentication",
+            "example": "123e4567-e89b-12d3-a456-426614174004"
+          },
+          "detectionTypes": {
+            "type": "array",
+            "description": "Types of AI detection to perform",
+            "items": {
+              "type": "string",
+              "enum": ["deepfake", "synthetic_voice", "behavior", "all"]
+            },
+            "default": ["all"],
+            "example": ["deepfake", "behavior"]
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive detection results",
+            "example": "https://example.com/callbacks/ai-detection"
+          }
+        }
+      },
+      "AiDetectionResponse": {
+        "type": "object",
+        "required": ["detectionId", "status", "userId", "phoneNumber"],
+        "properties": {
+          "detectionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the AI detection",
+            "example": "123e4567-e89b-12d3-a456-426614174006"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Status of the detection",
+            "example": "completed"
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the user",
+            "example": "user123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in E.164 format",
+            "example": "+12025550123"
+          },
+          "detectedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the detection was completed",
+            "example": "2025-04-20T17:15:00Z"
+          },
+          "aiImpersonationDetected": {
+            "type": "boolean",
+            "description": "Whether AI impersonation was detected",
+            "example": false
+          },
+          "overallRiskLevel": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high", "critical"],
+            "description": "Overall AI impersonation risk level",
+            "example": "low"
+          },
+          "overallRiskScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall AI impersonation risk score (0-1)",
+            "example": 0.15
+          },
+          "detectionResults": {
+            "type": "object",
+            "description": "Results of individual detection types",
+            "properties": {
+              "deepfake": {
+                "type": "object",
+                "description": "Deepfake detection result",
+                "properties": {
+                  "detected": {
+                    "type": "boolean",
+                    "description": "Whether deepfake was detected",
+                    "example": false
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.05
+                  },
+                  "indicators": {
+                    "type": "array",
+                    "description": "Indicators of deepfake",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  }
+                }
+              },
+              "behavior": {
+                "type": "object",
+                "description": "Behavioral analysis result",
+                "properties": {
+                  "anomalyDetected": {
+                    "type": "boolean",
+                    "description": "Whether behavioral anomaly was detected",
+                    "example": true
+                  },
+                  "confidenceScore": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Confidence score (0-1)",
+                    "example": 0.35
+                  },
+                  "indicators": {
+                    "type": "array",
+                    "description": "Indicators of behavioral anomaly",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["unusual_login_pattern"]
+                  }
+                }
+              }
+            }
+          },
+          "telecomNetworkAnalysis": {
+            "type": "object",
+            "description": "Analysis of telecom network data",
+            "properties": {
+              "networkConsistency": {
+                "type": "boolean",
+                "description": "Whether network data is consistent with user identity",
+                "example": true
+              },
+              "consistencyScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Network consistency score (0-1)",
+                "example": 0.95
+              },
+              "anomalies": {
+                "type": "array",
+                "description": "Network anomalies detected",
+                "items": {
+                  "type": "string"
+                },
+                "example": []
+              }
+            }
+          },
+          "recommendedActions": {
+            "type": "array",
+            "description": "Recommended actions based on detection results",
+            "items": {
+              "type": "string"
+            },
+            "example": ["No additional verification needed"]
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the authentication session",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "authId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the authentication",
+            "example": "123e4567-e89b-12d3-a456-426614174004"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

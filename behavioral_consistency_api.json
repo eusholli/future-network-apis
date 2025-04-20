@@ -1,0 +1,1625 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Behavioral Consistency API",
+    "description": "This API analyzes behavioral patterns across telecom network interactions to detect anomalies that might indicate AI impersonation or account takeover.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "behavior",
+      "description": "Behavioral analysis operations"
+    },
+    {
+      "name": "profiles",
+      "description": "Behavioral profile operations"
+    },
+    {
+      "name": "anomalies",
+      "description": "Anomaly detection operations"
+    }
+  ],
+  "paths": {
+    "/behavior/profile/create": {
+      "post": {
+        "tags": ["behavior", "profiles"],
+        "summary": "Create a behavioral profile",
+        "description": "Creates a new behavioral profile for a user based on their telecom network interactions.",
+        "operationId": "createBehavioralProfile",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/behavior/profile/{profileId}": {
+      "get": {
+        "tags": ["behavior", "profiles"],
+        "summary": "Get a behavioral profile",
+        "description": "Retrieves a user's behavioral profile.",
+        "operationId": "getBehavioralProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "ID of the behavioral profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["behavior", "profiles"],
+        "summary": "Update a behavioral profile",
+        "description": "Updates an existing behavioral profile with new data.",
+        "operationId": "updateBehavioralProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "ID of the behavioral profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["behavior", "profiles"],
+        "summary": "Delete a behavioral profile",
+        "description": "Deletes a user's behavioral profile.",
+        "operationId": "deleteBehavioralProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "ID of the behavioral profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Profile deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/behavior/analyze": {
+      "post": {
+        "tags": ["behavior"],
+        "summary": "Analyze current behavior",
+        "description": "Analyzes a user's current behavior against their behavioral profile to detect anomalies.",
+        "operationId": "analyzeBehavior",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BehaviorAnalysisRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Behavior analyzed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviorAnalysisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/behavior/anomalies": {
+      "get": {
+        "tags": ["behavior", "anomalies"],
+        "summary": "List behavioral anomalies",
+        "description": "Lists behavioral anomalies detected for a user.",
+        "operationId": "listAnomalies",
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "description": "Phone number of the user in E.164 format",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "consentToken",
+            "in": "query",
+            "description": "Token representing user consent for accessing anomaly data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date for the anomaly query (ISO 8601 format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date for the anomaly query (ISO 8601 format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "severity",
+            "in": "query",
+            "description": "Minimum severity level of anomalies to include",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["low", "medium", "high", "critical"]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of anomalies to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Anomalies retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnomaliesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/behavior/anomalies/{anomalyId}": {
+      "get": {
+        "tags": ["behavior", "anomalies"],
+        "summary": "Get anomaly details",
+        "description": "Retrieves details of a specific behavioral anomaly.",
+        "operationId": "getAnomalyDetails",
+        "parameters": [
+          {
+            "name": "anomalyId",
+            "in": "path",
+            "description": "ID of the anomaly",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Anomaly details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnomalyDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Anomaly not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["behavior", "anomalies"],
+        "summary": "Update anomaly status",
+        "description": "Updates the status of a behavioral anomaly.",
+        "operationId": "updateAnomalyStatus",
+        "parameters": [
+          {
+            "name": "anomalyId",
+            "in": "path",
+            "description": "ID of the anomaly",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnomalyStatusUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Anomaly status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnomalyDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Anomaly not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProfileCreationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "dataCollectionPeriod"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for profile creation",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "dataCollectionPeriod": {
+            "type": "integer",
+            "description": "Period in days for which to collect data (1-90)",
+            "minimum": 1,
+            "maximum": 90,
+            "example": 30
+          },
+          "behaviorTypes": {
+            "type": "array",
+            "description": "Types of behaviors to include in the profile",
+            "items": {
+              "type": "string",
+              "enum": ["calling", "messaging", "data_usage", "location", "device", "all"]
+            },
+            "default": ["all"],
+            "example": ["calling", "messaging", "location"]
+          },
+          "sensitivityLevel": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Sensitivity level for anomaly detection",
+            "default": "medium",
+            "example": "medium"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive profile creation result callback",
+            "example": "https://example.com/callbacks/profile"
+          }
+        }
+      },
+      "ProfileUpdateRequest": {
+        "type": "object",
+        "required": ["consentToken"],
+        "properties": {
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for profile update",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "dataCollectionPeriod": {
+            "type": "integer",
+            "description": "Period in days for which to collect data (1-90)",
+            "minimum": 1,
+            "maximum": 90,
+            "example": 30
+          },
+          "behaviorTypes": {
+            "type": "array",
+            "description": "Types of behaviors to include in the profile",
+            "items": {
+              "type": "string",
+              "enum": ["calling", "messaging", "data_usage", "location", "device", "all"]
+            },
+            "example": ["calling", "messaging", "data_usage", "location"]
+          },
+          "sensitivityLevel": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Sensitivity level for anomaly detection",
+            "example": "high"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive profile update result callback",
+            "example": "https://example.com/callbacks/profile-update"
+          }
+        }
+      },
+      "ProfileResponse": {
+        "type": "object",
+        "required": ["profileId", "status", "createdAt"],
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the behavioral profile",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["creating", "active", "updating", "inactive"],
+            "description": "Current status of the profile",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the profile was created",
+            "example": "2025-03-20T14:30:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the profile was last updated",
+            "example": "2025-04-20T15:45:00Z"
+          },
+          "behaviorTypes": {
+            "type": "array",
+            "description": "Types of behaviors included in the profile",
+            "items": {
+              "type": "string",
+              "enum": ["calling", "messaging", "data_usage", "location", "device"]
+            },
+            "example": ["calling", "messaging", "location"]
+          },
+          "dataCollectionPeriod": {
+            "type": "integer",
+            "description": "Period in days for which data was collected",
+            "example": 30
+          },
+          "sensitivityLevel": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Sensitivity level for anomaly detection",
+            "example": "medium"
+          },
+          "behaviorSummary": {
+            "type": "object",
+            "description": "Summary of the behavioral patterns in the profile",
+            "properties": {
+              "callingPatterns": {
+                "type": "object",
+                "description": "Summary of calling patterns",
+                "properties": {
+                  "averageDailyCallCount": {
+                    "type": "number",
+                    "description": "Average number of calls per day",
+                    "example": 5.2
+                  },
+                  "topCallingHours": {
+                    "type": "array",
+                    "description": "Hours of the day with most calls (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [9, 12, 18]
+                  },
+                  "frequentContacts": {
+                    "type": "integer",
+                    "description": "Number of frequent contacts",
+                    "example": 8
+                  }
+                }
+              },
+              "messagingPatterns": {
+                "type": "object",
+                "description": "Summary of messaging patterns",
+                "properties": {
+                  "averageDailyMessageCount": {
+                    "type": "number",
+                    "description": "Average number of messages per day",
+                    "example": 42.7
+                  },
+                  "topMessagingHours": {
+                    "type": "array",
+                    "description": "Hours of the day with most messages (0-23)",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [8, 13, 20]
+                  },
+                  "frequentContacts": {
+                    "type": "integer",
+                    "description": "Number of frequent contacts",
+                    "example": 12
+                  }
+                }
+              },
+              "locationPatterns": {
+                "type": "object",
+                "description": "Summary of location patterns",
+                "properties": {
+                  "frequentLocations": {
+                    "type": "integer",
+                    "description": "Number of frequent locations",
+                    "example": 5
+                  },
+                  "typicalTravelRadius": {
+                    "type": "number",
+                    "description": "Typical travel radius in kilometers",
+                    "example": 15.3
+                  },
+                  "commonLocationTypes": {
+                    "type": "array",
+                    "description": "Common types of locations",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["home", "work", "gym", "grocery", "restaurant"]
+                  }
+                }
+              }
+            }
+          },
+          "anomalyDetectionStats": {
+            "type": "object",
+            "description": "Statistics about anomaly detection",
+            "properties": {
+              "totalAnomaliesDetected": {
+                "type": "integer",
+                "description": "Total number of anomalies detected",
+                "example": 3
+              },
+              "lastAnomalyDetected": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Time when the last anomaly was detected",
+                "example": "2025-04-15T10:20:00Z"
+              },
+              "anomaliesBySeverity": {
+                "type": "object",
+                "description": "Count of anomalies by severity level",
+                "properties": {
+                  "low": {
+                    "type": "integer",
+                    "description": "Count of low severity anomalies",
+                    "example": 2
+                  },
+                  "medium": {
+                    "type": "integer",
+                    "description": "Count of medium severity anomalies",
+                    "example": 1
+                  },
+                  "high": {
+                    "type": "integer",
+                    "description": "Count of high severity anomalies",
+                    "example": 0
+                  },
+                  "critical": {
+                    "type": "integer",
+                    "description": "Count of critical severity anomalies",
+                    "example": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "BehaviorAnalysisRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for behavior analysis",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "profileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the profile to analyze against (optional, will use default if not provided)",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "analysisWindow": {
+            "type": "integer",
+            "description": "Time window in hours to analyze (1-72)",
+            "minimum": 1,
+            "maximum": 72,
+            "default": 24,
+            "example": 12
+          },
+          "behaviorTypes": {
+            "type": "array",
+            "description": "Types of behaviors to analyze",
+            "items": {
+              "type": "string",
+              "enum": ["calling", "messaging", "data_usage", "location", "device", "all"]
+            },
+            "default": ["all"],
+            "example": ["calling", "messaging", "location"]
+          },
+          "sensitivityLevel": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Sensitivity level for anomaly detection",
+            "default": "medium",
+            "example": "medium"
+          },
+          "includeDetails": {
+            "type": "boolean",
+            "description": "Whether to include detailed behavior analysis in the response",
+            "default": false,
+            "example": true
+          }
+        }
+      },
+      "BehaviorAnalysisResponse": {
+        "type": "object",
+        "required": ["analysisId", "consistencyScore", "anomaliesDetected", "analysisTimestamp"],
+        "properties": {
+          "analysisId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the analysis",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "consistencyScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall consistency score with the behavioral profile (0-1)",
+            "example": 0.92
+          },
+          "anomaliesDetected": {
+            "type": "boolean",
+            "description": "Whether any anomalies were detected",
+            "example": false
+          },
+          "analysisTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the analysis was performed",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "behaviorScores": {
+            "type": "object",
+            "description": "Consistency scores for individual behavior types",
+            "properties": {
+              "calling": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Consistency score for calling behavior (0-1)",
+                "example": 0.95
+              },
+              "messaging": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Consistency score for messaging behavior (0-1)",
+                "example": 0.88
+              },
+              "data_usage": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Consistency score for data usage behavior (0-1)",
+                "example": 0.9
+              },
+              "location": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Consistency score for location behavior (0-1)",
+                "example": 0.97
+              },
+              "device": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Consistency score for device usage behavior (0-1)",
+                "example": 0.93
+              }
+            }
+          },
+          "anomalies": {
+            "type": "array",
+            "description": "Anomalies detected during analysis",
+            "items": {
+              "type": "object",
+              "properties": {
+                "anomalyId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the anomaly",
+                  "example": "123e4567-e89b-12d3-a456-426614174001"
+                },
+                "behaviorType": {
+                  "type": "string",
+                  "enum": ["calling", "messaging", "data_usage", "location", "device"],
+                  "description": "Type of behavior where the anomaly was detected",
+                  "example": "location"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high", "critical"],
+                  "description": "Severity of the anomaly",
+                  "example": "medium"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the anomaly",
+                  "example": "Unusual location activity detected outside typical travel patterns"
+                },
+                "detectedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the anomaly was detected",
+                  "example": "2025-04-20T15:45:00Z"
+                },
+                "confidenceScore": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Confidence score for the anomaly detection (0-1)",
+                  "example": 0.85
+                }
+              }
+            }
+          },
+          "detailedAnalysis": {
+            "type": "object",
+            "description": "Detailed analysis of current behavior",
+            "properties": {
+              "callingAnalysis": {
+                "type": "object",
+                "description": "Analysis of calling behavior",
+                "properties": {
+                  "callCount": {
+                    "type": "integer",
+                    "description": "Number of calls in the analysis window",
+                    "example": 8
+                  },
+                  "unusualCallTimes": {
+                    "type": "boolean",
+                    "description": "Whether calls were made at unusual times",
+                    "example": false
+                  },
+                  "unusualCallDurations": {
+                    "type": "boolean",
+                    "description": "Whether calls had unusual durations",
+                    "example": false
+                  },
+                  "unusualCallRecipients": {
+                    "type": "boolean",
+                    "description": "Whether calls were made to unusual recipients",
+                    "example": false
+                  }
+                }
+              },
+              "messagingAnalysis": {
+                "type": "object",
+                "description": "Analysis of messaging behavior",
+                "properties": {
+                  "messageCount": {
+                    "type": "integer",
+                    "description": "Number of messages in the analysis window",
+                    "example": 35
+                  },
+                  "unusualMessageTimes": {
+                    "type": "boolean",
+                    "description": "Whether messages were sent at unusual times",
+                    "example": false
+                  },
+                  "unusualMessageContent": {
+                    "type": "boolean",
+                    "description": "Whether messages had unusual content patterns",
+                    "example": false
+                  },
+                  "unusualMessageRecipients": {
+                    "type": "boolean",
+                    "description": "Whether messages were sent to unusual recipients",
+                    "example": false
+                  }
+                }
+              },
+              "locationAnalysis": {
+                "type": "object",
+                "description": "Analysis of location behavior",
+                "properties": {
+                  "locationChanges": {
+                    "type": "integer",
+                    "description": "Number of significant location changes in the analysis window",
+                    "example": 5
+                  },
+                  "unusualLocations": {
+                    "type": "boolean",
+                    "description": "Whether user visited unusual locations",
+                    "example": false
+                  },
+                  "unusualTravelPatterns": {
+                    "type": "boolean",
+                    "description": "Whether user exhibited unusual travel patterns",
+                    "example": false
+                  },
+                  "unusualTravelSpeed": {
+                    "type": "boolean",
+                    "description": "Whether user traveled at unusual speeds",
+                    "example": false
+                  }
+                }
+              }
+            }
+          },
+          "recommendation": {
+            "type": "string",
+            "enum": ["normal", "monitor", "investigate", "alert"],
+            "description": "Recommendation based on the analysis",
+            "example": "normal"
+          }
+        }
+      },
+      "AnomaliesResponse": {
+        "type": "object",
+        "required": ["phoneNumber", "anomalies"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Start date of the anomaly query",
+            "example": "2025-03-20"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "End date of the anomaly query",
+            "example": "2025-04-20"
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total number of anomalies matching the query",
+            "example": 3
+          },
+          "anomalies": {
+            "type": "array",
+            "description": "List of anomalies",
+            "items": {
+              "type": "object",
+              "properties": {
+                "anomalyId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the anomaly",
+                  "example": "123e4567-e89b-12d3-a456-426614174001"
+                },
+                "behaviorType": {
+                  "type": "string",
+                  "enum": ["calling", "messaging", "data_usage", "location", "device"],
+                  "description": "Type of behavior where the anomaly was detected",
+                  "example": "location"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high", "critical"],
+                  "description": "Severity of the anomaly",
+                  "example": "medium"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the anomaly",
+                  "example": "Unusual location activity detected outside typical travel patterns"
+                },
+                "detectedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the anomaly was detected",
+                  "example": "2025-04-15T10:20:00Z"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["new", "acknowledged", "investigating", "resolved", "false_positive"],
+                  "description": "Current status of the anomaly",
+                  "example": "new"
+                }
+              }
+            }
+          },
+          "severitySummary": {
+            "type": "object",
+            "description": "Summary of anomalies by severity",
+            "properties": {
+              "low": {
+                "type": "integer",
+                "description": "Count of low severity anomalies",
+                "example": 2
+              },
+              "medium": {
+                "type": "integer",
+                "description": "Count of medium severity anomalies",
+                "example": 1
+              },
+              "high": {
+                "type": "integer",
+                "description": "Count of high severity anomalies",
+                "example": 0
+              },
+              "critical": {
+                "type": "integer",
+                "description": "Count of critical severity anomalies",
+                "example": 0
+              }
+            }
+          }
+        }
+      },
+      "AnomalyDetailsResponse": {
+        "type": "object",
+        "required": ["anomalyId", "behaviorType", "severity", "description", "detectedAt", "status"],
+        "properties": {
+          "anomalyId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the anomaly",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "behaviorType": {
+            "type": "string",
+            "enum": ["calling", "messaging", "data_usage", "location", "device"],
+            "description": "Type of behavior where the anomaly was detected",
+            "example": "location"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"],
+            "description": "Severity of the anomaly",
+            "example": "medium"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the anomaly",
+            "example": "Unusual location activity detected outside typical travel patterns"
+          },
+          "detectedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the anomaly was detected",
+            "example": "2025-04-15T10:20:00Z"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["new", "acknowledged", "investigating", "resolved", "false_positive"],
+            "description": "Current status of the anomaly",
+            "example": "new"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the anomaly was last updated",
+            "example": "2025-04-15T10:20:00Z"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "profileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the behavioral profile used for detection",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for the anomaly detection (0-1)",
+            "example": 0.85
+          },
+          "details": {
+            "type": "object",
+            "description": "Detailed information about the anomaly",
+            "properties": {
+              "expectedBehavior": {
+                "type": "string",
+                "description": "Description of the expected behavior",
+                "example": "User typically stays within a 15km radius of home and work locations"
+              },
+              "observedBehavior": {
+                "type": "string",
+                "description": "Description of the observed behavior",
+                "example": "User traveled to a location 50km away from typical patterns"
+              },
+              "deviationMetrics": {
+                "type": "object",
+                "description": "Metrics quantifying the deviation from normal behavior",
+                "properties": {
+                  "distanceDeviation": {
+                    "type": "number",
+                    "description": "Deviation in distance (km)",
+                    "example": 35
+                  },
+                  "timeDeviation": {
+                    "type": "number",
+                    "description": "Deviation in time (hours)",
+                    "example": 2.5
+                  },
+                  "patternDeviation": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Overall pattern deviation score (0-1)",
+                    "example": 0.7
+                  }
+                }
+              },
+              "relatedAnomalies": {
+                "type": "array",
+                "description": "IDs of related anomalies",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "example": ["123e4567-e89b-12d3-a456-426614174002"]
+              }
+            }
+          },
+          "aiImpersonationRisk": {
+            "type": "object",
+            "description": "Assessment of AI impersonation risk",
+            "properties": {
+              "riskLevel": {
+                "type": "string",
+                "enum": ["low", "medium", "high", "critical"],
+                "description": "Level of AI impersonation risk",
+                "example": "low"
+              },
+              "riskScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Score indicating AI impersonation risk (0-1)",
+                "example": 0.2
+              },
+              "indicators": {
+                "type": "array",
+                "description": "Indicators of potential AI impersonation",
+                "items": {
+                  "type": "string"
+                },
+                "example": ["unusual_location"]
+              }
+            }
+          },
+          "recommendedActions": {
+            "type": "array",
+            "description": "Recommended actions to take",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Verify user identity through additional authentication", "Contact user through alternate channel"]
+          },
+          "notes": {
+            "type": "array",
+            "description": "Notes added to the anomaly",
+            "items": {
+              "type": "object",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the note was added",
+                  "example": "2025-04-15T11:30:00Z"
+                },
+                "author": {
+                  "type": "string",
+                  "description": "Author of the note",
+                  "example": "system"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Content of the note",
+                  "example": "Automated analysis suggests this may be due to a business trip"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AnomalyStatusUpdateRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["acknowledged", "investigating", "resolved", "false_positive"],
+            "description": "New status for the anomaly",
+            "example": "acknowledged"
+          },
+          "note": {
+            "type": "string",
+            "description": "Note to add to the anomaly",
+            "example": "User confirmed this was a legitimate business trip"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

@@ -1,0 +1,1038 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Content Origin Verification API",
+    "description": "This API verifies the origin of digital content by tracking its creation and transmission through telecom networks, helping to distinguish between human-created and AI-generated content.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "content",
+      "description": "Content verification operations"
+    },
+    {
+      "name": "certificates",
+      "description": "Certificate operations"
+    },
+    {
+      "name": "verification",
+      "description": "Verification operations"
+    }
+  ],
+  "paths": {
+    "/content/register": {
+      "post": {
+        "tags": ["content"],
+        "summary": "Register content for origin verification",
+        "description": "Registers digital content for origin verification by creating a cryptographic certificate of its creation on a telecom network.",
+        "operationId": "registerContent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentRegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Content registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/content/verify": {
+      "post": {
+        "tags": ["content", "verification"],
+        "summary": "Verify content origin",
+        "description": "Verifies the origin of digital content using its cryptographic certificate.",
+        "operationId": "verifyContent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Content verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/content/{contentId}": {
+      "get": {
+        "tags": ["content"],
+        "summary": "Get content registration details",
+        "description": "Retrieves the registration details for a piece of content.",
+        "operationId": "getContentDetails",
+        "parameters": [
+          {
+            "name": "contentId",
+            "in": "path",
+            "description": "ID of the registered content",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Content details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Content not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/content/certificate/{certificateId}": {
+      "get": {
+        "tags": ["certificates"],
+        "summary": "Get content certificate",
+        "description": "Retrieves a content origin certificate.",
+        "operationId": "getContentCertificate",
+        "parameters": [
+          {
+            "name": "certificateId",
+            "in": "path",
+            "description": "ID of the certificate",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certificate retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certificate not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/content/analyze": {
+      "post": {
+        "tags": ["content"],
+        "summary": "Analyze content for AI generation probability",
+        "description": "Analyzes digital content to determine the probability that it was generated by AI versus created by a human.",
+        "operationId": "analyzeContent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentAnalysisRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Content analyzed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentAnalysisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ContentRegistrationRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken", "contentType", "contentHash"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the content creator in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for content registration",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "contentType": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video", "document"],
+            "description": "Type of content being registered",
+            "example": "image"
+          },
+          "contentHash": {
+            "type": "string",
+            "description": "SHA-256 hash of the content",
+            "example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "contentMetadata": {
+            "type": "object",
+            "description": "Additional metadata about the content",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title of the content",
+                "example": "Sunset at the Beach"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the content",
+                "example": "A photograph of a sunset at Malibu Beach"
+              },
+              "creationTimestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Time when the content was created",
+                "example": "2025-04-20T15:30:00Z"
+              },
+              "deviceInfo": {
+                "type": "string",
+                "description": "Information about the device used to create the content",
+                "example": "iPhone 15 Pro"
+              },
+              "location": {
+                "type": "object",
+                "description": "Location where the content was created",
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Latitude coordinate",
+                    "example": 34.0259
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Longitude coordinate",
+                    "example": -118.7798
+                  }
+                }
+              }
+            }
+          },
+          "includeNetworkData": {
+            "type": "boolean",
+            "description": "Whether to include telecom network data in the certificate",
+            "default": true,
+            "example": true
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive registration result callback",
+            "example": "https://example.com/callbacks/content-registration"
+          }
+        }
+      },
+      "ContentRegistrationResponse": {
+        "type": "object",
+        "required": ["contentId", "certificateId", "registrationTimestamp"],
+        "properties": {
+          "contentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the registered content",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "certificateId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the content origin certificate",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "registrationTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the content was registered",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "certificate": {
+            "type": "string",
+            "description": "Content origin certificate in PEM format",
+            "example": "-----BEGIN CERTIFICATE-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0zJq..."
+          },
+          "verificationUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL that can be used to verify the content origin",
+            "example": "https://verify.telecom-network.example.com/content/123e4567-e89b-12d3-a456-426614174000"
+          },
+          "embeddableCode": {
+            "type": "string",
+            "description": "HTML code that can be embedded in a webpage to display the content origin verification",
+            "example": "<div data-telecom-content-verification=\"123e4567-e89b-12d3-a456-426614174000\"></div><script src=\"https://verify.telecom-network.example.com/embed.js\"></script>"
+          }
+        }
+      },
+      "ContentVerificationRequest": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": ["contentId"]
+          },
+          {
+            "required": ["certificateId"]
+          },
+          {
+            "required": ["contentHash", "certificate"]
+          }
+        ],
+        "properties": {
+          "contentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the registered content",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "certificateId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the content origin certificate",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "contentHash": {
+            "type": "string",
+            "description": "SHA-256 hash of the content",
+            "example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "certificate": {
+            "type": "string",
+            "description": "Content origin certificate in PEM format",
+            "example": "-----BEGIN CERTIFICATE-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0zJq..."
+          },
+          "verificationLevel": {
+            "type": "string",
+            "enum": ["basic", "standard", "high"],
+            "description": "Level of verification to perform",
+            "default": "standard",
+            "example": "high"
+          }
+        }
+      },
+      "ContentVerificationResponse": {
+        "type": "object",
+        "required": ["verified", "contentId", "verificationTimestamp"],
+        "properties": {
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the content origin was verified successfully",
+            "example": true
+          },
+          "contentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the verified content",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "verificationTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the verification was performed",
+            "example": "2025-04-20T16:45:00Z"
+          },
+          "contentType": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video", "document"],
+            "description": "Type of content",
+            "example": "image"
+          },
+          "creatorPhoneNumber": {
+            "type": "string",
+            "description": "Phone number of the content creator (partially masked)",
+            "example": "+1202XXXX123"
+          },
+          "creationTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the content was created",
+            "example": "2025-04-20T15:30:00Z"
+          },
+          "registrationTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the content was registered",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "networkData": {
+            "type": "object",
+            "description": "Telecom network data associated with the content",
+            "properties": {
+              "networkProvider": {
+                "type": "string",
+                "description": "Name of the telecom network provider",
+                "example": "Example Telecom"
+              },
+              "deviceIdentifier": {
+                "type": "string",
+                "description": "Identifier of the device used to create the content (partially masked)",
+                "example": "IMEI: 35-XXXXXX-XXXXXX-4"
+              },
+              "locationVerified": {
+                "type": "boolean",
+                "description": "Whether the location was verified by the network",
+                "example": true
+              }
+            }
+          },
+          "verificationDetails": {
+            "type": "object",
+            "description": "Details of the verification process",
+            "properties": {
+              "certificateValid": {
+                "type": "boolean",
+                "description": "Whether the certificate is valid",
+                "example": true
+              },
+              "certificateExpired": {
+                "type": "boolean",
+                "description": "Whether the certificate has expired",
+                "example": false
+              },
+              "certificateRevoked": {
+                "type": "boolean",
+                "description": "Whether the certificate has been revoked",
+                "example": false
+              },
+              "contentHashMatch": {
+                "type": "boolean",
+                "description": "Whether the content hash matches the one in the certificate",
+                "example": true
+              }
+            }
+          },
+          "humanCreationConfidence": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score that the content was created by a human (0-1)",
+            "example": 0.95
+          }
+        }
+      },
+      "ContentDetailsResponse": {
+        "type": "object",
+        "required": ["contentId", "contentType", "contentHash", "registrationTimestamp"],
+        "properties": {
+          "contentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the registered content",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "contentType": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video", "document"],
+            "description": "Type of content",
+            "example": "image"
+          },
+          "contentHash": {
+            "type": "string",
+            "description": "SHA-256 hash of the content",
+            "example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "registrationTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the content was registered",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "creatorPhoneNumber": {
+            "type": "string",
+            "description": "Phone number of the content creator (partially masked)",
+            "example": "+1202XXXX123"
+          },
+          "certificateId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the content origin certificate",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "contentMetadata": {
+            "type": "object",
+            "description": "Metadata about the content",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title of the content",
+                "example": "Sunset at the Beach"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the content",
+                "example": "A photograph of a sunset at Malibu Beach"
+              },
+              "creationTimestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Time when the content was created",
+                "example": "2025-04-20T15:30:00Z"
+              },
+              "deviceInfo": {
+                "type": "string",
+                "description": "Information about the device used to create the content",
+                "example": "iPhone 15 Pro"
+              },
+              "location": {
+                "type": "object",
+                "description": "Location where the content was created",
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Latitude coordinate",
+                    "example": 34.0259
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Longitude coordinate",
+                    "example": -118.7798
+                  }
+                }
+              }
+            }
+          },
+          "verificationCount": {
+            "type": "integer",
+            "description": "Number of times the content has been verified",
+            "example": 42
+          },
+          "lastVerificationTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of the most recent verification",
+            "example": "2025-04-20T18:15:00Z"
+          }
+        }
+      },
+      "CertificateResponse": {
+        "type": "object",
+        "required": ["certificateId", "certificate", "issuedAt", "expiresAt"],
+        "properties": {
+          "certificateId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the certificate",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "certificate": {
+            "type": "string",
+            "description": "Content origin certificate in PEM format",
+            "example": "-----BEGIN CERTIFICATE-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0zJq..."
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the certificate was issued",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the certificate expires",
+            "example": "2026-04-20T16:30:00Z"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Issuer of the certificate",
+            "example": "Telecom Content Authority"
+          },
+          "contentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the content associated with this certificate",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["valid", "expired", "revoked"],
+            "description": "Current status of the certificate",
+            "example": "valid"
+          },
+          "revocationReason": {
+            "type": "string",
+            "description": "Reason for revocation if status is 'revoked'",
+            "example": null
+          }
+        }
+      },
+      "ContentAnalysisRequest": {
+        "type": "object",
+        "required": ["contentType", "content"],
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video"],
+            "description": "Type of content to analyze",
+            "example": "text"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to analyze (for text) or URL/base64 for other types",
+            "example": "This is a sample text that needs to be analyzed for AI generation probability."
+          },
+          "contentUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the content to analyze (alternative to content field)",
+            "example": "https://example.com/content/sample.jpg"
+          },
+          "analysisLevel": {
+            "type": "string",
+            "enum": ["basic", "standard", "deep"],
+            "description": "Level of analysis to perform",
+            "default": "standard",
+            "example": "deep"
+          },
+          "includeNetworkData": {
+            "type": "boolean",
+            "description": "Whether to include telecom network data in the analysis",
+            "default": false,
+            "example": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number associated with the content in E.164 format (required if includeNetworkData is true)",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for network data analysis (required if includeNetworkData is true)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "ContentAnalysisResponse": {
+        "type": "object",
+        "required": ["analysisId", "contentType", "aiGenerationProbability", "analysisTimestamp"],
+        "properties": {
+          "analysisId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the analysis",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "contentType": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video"],
+            "description": "Type of content analyzed",
+            "example": "text"
+          },
+          "aiGenerationProbability": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Probability that the content was generated by AI (0-1)",
+            "example": 0.15
+          },
+          "humanCreationProbability": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Probability that the content was created by a human (0-1)",
+            "example": 0.85
+          },
+          "analysisTimestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the analysis was performed",
+            "example": "2025-04-20T16:45:00Z"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence in the analysis results (0-1)",
+            "example": 0.92
+          },
+          "analysisFactors": {
+            "type": "array",
+            "description": "Factors considered in the analysis",
+            "items": {
+              "type": "object",
+              "properties": {
+                "factor": {
+                  "type": "string",
+                  "description": "Name of the factor",
+                  "example": "linguisticPatterns"
+                },
+                "aiProbability": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "AI probability for this factor (0-1)",
+                  "example": 0.2
+                },
+                "weight": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Weight of this factor in the overall analysis (0-1)",
+                  "example": 0.3
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the factor analysis",
+                  "example": "Linguistic patterns are more consistent with human writing than AI generation"
+                }
+              }
+            }
+          },
+          "networkDataAnalysis": {
+            "type": "object",
+            "description": "Analysis based on telecom network data (if requested)",
+            "properties": {
+              "deviceConsistency": {
+                "type": "boolean",
+                "description": "Whether the device used is consistent with the user's normal patterns",
+                "example": true
+              },
+              "locationConsistency": {
+                "type": "boolean",
+                "description": "Whether the location is consistent with the user's normal patterns",
+                "example": true
+              },
+              "behavioralMatch": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Degree of match with the user's behavioral patterns (0-1)",
+                "example": 0.9
+              }
+            }
+          },
+          "recommendation": {
+            "type": "string",
+            "enum": ["human_created", "likely_human_created", "uncertain", "likely_ai_generated", "ai_generated"],
+            "description": "Overall recommendation based on the analysis",
+            "example": "likely_human_created"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided content hash is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "contentHash",
+              "reason": "Must be a valid SHA-256 hash"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

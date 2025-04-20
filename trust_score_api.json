@@ -1,0 +1,861 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Trust Score API",
+    "description": "This API provides a dynamic 'trust score' for digital identities based on telecom network data, creating a portable trust metric that can be used across services.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Telecom Network APIs Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.telecom-network.example.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox.telecom-network.example.com/v1",
+      "description": "Sandbox server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "trust",
+      "description": "Trust score operations"
+    },
+    {
+      "name": "factors",
+      "description": "Trust factor operations"
+    },
+    {
+      "name": "verification",
+      "description": "Verification operations"
+    }
+  ],
+  "paths": {
+    "/trust/score": {
+      "post": {
+        "tags": ["trust"],
+        "summary": "Calculate trust score",
+        "description": "Calculates a trust score for a digital identity based on telecom network data.",
+        "operationId": "calculateTrustScore",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrustScoreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trust score calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrustScoreResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/trust/score/{scoreId}": {
+      "get": {
+        "tags": ["trust"],
+        "summary": "Get trust score",
+        "description": "Retrieves a previously calculated trust score.",
+        "operationId": "getTrustScore",
+        "parameters": [
+          {
+            "name": "scoreId",
+            "in": "path",
+            "description": "ID of the trust score",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust score retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrustScoreResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trust score not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/trust/factors": {
+      "get": {
+        "tags": ["factors"],
+        "summary": "List trust factors",
+        "description": "Lists all available trust factors that can be used in trust score calculation.",
+        "operationId": "listTrustFactors",
+        "responses": {
+          "200": {
+            "description": "Trust factors retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrustFactorsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/trust/verify": {
+      "post": {
+        "tags": ["verification"],
+        "summary": "Verify trust score",
+        "description": "Verifies the authenticity of a trust score token.",
+        "operationId": "verifyTrustScore",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrustScoreVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trust score verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrustScoreVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/trust/history": {
+      "get": {
+        "tags": ["trust"],
+        "summary": "Get trust score history",
+        "description": "Retrieves the history of trust scores for a digital identity.",
+        "operationId": "getTrustScoreHistory",
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "description": "Phone number of the user in E.164 format",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "consentToken",
+            "in": "query",
+            "description": "Token representing user consent for accessing trust score history",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date for the history query (ISO 8601 format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date for the history query (ISO 8601 format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of records to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust score history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrustScoreHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User has not provided consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests - Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TrustScoreRequest": {
+        "type": "object",
+        "required": ["phoneNumber", "consentToken"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "consentToken": {
+            "type": "string",
+            "description": "Token representing user consent for trust score calculation",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "factors": {
+            "type": "array",
+            "description": "Specific trust factors to include in the calculation (if empty, all available factors will be used)",
+            "items": {
+              "type": "string",
+              "enum": [
+                "accountAge",
+                "identityVerification",
+                "locationConsistency",
+                "communicationPatterns",
+                "deviceHistory",
+                "paymentHistory",
+                "networkActivity",
+                "behavioralBiometrics"
+              ]
+            },
+            "example": ["accountAge", "identityVerification", "locationConsistency"]
+          },
+          "includeDetails": {
+            "type": "boolean",
+            "description": "Whether to include detailed factor scores in the response",
+            "default": false,
+            "example": true
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to receive trust score calculation result callback",
+            "example": "https://example.com/callbacks/trust-score"
+          }
+        }
+      },
+      "TrustScoreResponse": {
+        "type": "object",
+        "required": ["scoreId", "phoneNumber", "score", "calculatedAt", "expiresAt"],
+        "properties": {
+          "scoreId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the trust score",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "score": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1000,
+            "description": "Trust score value (0-1000)",
+            "example": 850
+          },
+          "scoreCategory": {
+            "type": "string",
+            "enum": ["very_low", "low", "medium", "high", "very_high"],
+            "description": "Categorical representation of the trust score",
+            "example": "high"
+          },
+          "calculatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the trust score was calculated",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the trust score expires",
+            "example": "2025-04-21T16:30:00Z"
+          },
+          "factorScores": {
+            "type": "array",
+            "description": "Detailed scores for individual trust factors",
+            "items": {
+              "type": "object",
+              "properties": {
+                "factor": {
+                  "type": "string",
+                  "description": "Name of the trust factor",
+                  "example": "accountAge"
+                },
+                "score": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1000,
+                  "description": "Score for this factor (0-1000)",
+                  "example": 900
+                },
+                "weight": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Weight of this factor in the overall score (0-1)",
+                  "example": 0.2
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the factor score",
+                  "example": "Account has been active for 5+ years"
+                }
+              }
+            }
+          },
+          "trustToken": {
+            "type": "string",
+            "description": "Portable token representing the trust score that can be verified by third parties",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "recommendations": {
+            "type": "array",
+            "description": "Recommendations for improving the trust score",
+            "items": {
+              "type": "object",
+              "properties": {
+                "factor": {
+                  "type": "string",
+                  "description": "Factor that can be improved",
+                  "example": "identityVerification"
+                },
+                "recommendation": {
+                  "type": "string",
+                  "description": "Recommendation for improvement",
+                  "example": "Complete additional identity verification steps"
+                },
+                "potentialImpact": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"],
+                  "description": "Potential impact on the trust score",
+                  "example": "high"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TrustFactorsResponse": {
+        "type": "object",
+        "required": ["factors"],
+        "properties": {
+          "factors": {
+            "type": "array",
+            "description": "List of available trust factors",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Identifier for the trust factor",
+                  "example": "accountAge"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable name of the trust factor",
+                  "example": "Account Age"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the trust factor",
+                  "example": "Length of time the user has had an active account with the telecom provider"
+                },
+                "dataRequirements": {
+                  "type": "array",
+                  "description": "Data required for this factor",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["accountHistory"]
+                },
+                "defaultWeight": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Default weight of this factor in the overall score (0-1)",
+                  "example": 0.2
+                }
+              }
+            }
+          }
+        }
+      },
+      "TrustScoreVerificationRequest": {
+        "type": "object",
+        "required": ["trustToken"],
+        "properties": {
+          "trustToken": {
+            "type": "string",
+            "description": "Trust score token to verify",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "TrustScoreVerificationResponse": {
+        "type": "object",
+        "required": ["valid", "score"],
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Whether the trust token is valid",
+            "example": true
+          },
+          "score": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1000,
+            "description": "Trust score value (0-1000)",
+            "example": 850
+          },
+          "scoreCategory": {
+            "type": "string",
+            "enum": ["very_low", "low", "medium", "high", "very_high"],
+            "description": "Categorical representation of the trust score",
+            "example": "high"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format (partially masked)",
+            "example": "+1202XXXX123"
+          },
+          "calculatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the trust score was calculated",
+            "example": "2025-04-20T16:30:00Z"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the trust score expires",
+            "example": "2025-04-21T16:30:00Z"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Issuer of the trust score",
+            "example": "Telecom Trust Authority"
+          }
+        }
+      },
+      "TrustScoreHistoryResponse": {
+        "type": "object",
+        "required": ["phoneNumber", "history"],
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the user in E.164 format",
+            "example": "+12025550123"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Start date of the history period",
+            "example": "2025-01-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "End date of the history period",
+            "example": "2025-04-20"
+          },
+          "history": {
+            "type": "array",
+            "description": "History of trust scores",
+            "items": {
+              "type": "object",
+              "properties": {
+                "scoreId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the trust score",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "score": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1000,
+                  "description": "Trust score value (0-1000)",
+                  "example": 850
+                },
+                "scoreCategory": {
+                  "type": "string",
+                  "enum": ["very_low", "low", "medium", "high", "very_high"],
+                  "description": "Categorical representation of the trust score",
+                  "example": "high"
+                },
+                "calculatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Time when the trust score was calculated",
+                  "example": "2025-03-15T14:30:00Z"
+                },
+                "factors": {
+                  "type": "array",
+                  "description": "Factors used in the calculation",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["accountAge", "identityVerification", "locationConsistency"]
+                }
+              }
+            }
+          },
+          "trendAnalysis": {
+            "type": "object",
+            "description": "Analysis of trust score trends",
+            "properties": {
+              "overallTrend": {
+                "type": "string",
+                "enum": ["increasing", "decreasing", "stable"],
+                "description": "Overall trend of trust scores",
+                "example": "increasing"
+              },
+              "averageScore": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 1000,
+                "description": "Average trust score over the period",
+                "example": 820
+              },
+              "significantChanges": {
+                "type": "array",
+                "description": "Significant changes in trust score",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "Date of the significant change",
+                      "example": "2025-02-10"
+                    },
+                    "change": {
+                      "type": "number",
+                      "description": "Magnitude of the change",
+                      "example": 50
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Reason for the change",
+                      "example": "Completed additional identity verification"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PARAMETER"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "The provided phone number is invalid"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details",
+            "example": {
+              "parameter": "phoneNumber",
+              "reason": "Must be in E.164 format"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}
