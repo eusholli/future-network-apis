@@ -1,4 +1,4 @@
-# Future Network APIs: Restoring Trust in an AI-Dominated World
+# Restoring Trust in an AI-Dominated World
 
 ## Project Overview
 
